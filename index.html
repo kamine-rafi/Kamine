@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -68,14 +68,3 @@ function send(){
     let chat=document.getElementById("chat");
 
     if(input.value=="") return;
-
-    chat.innerHTML += "<div class='msg'>🧑 "+input.value+"</div>";
-    chat.innerHTML += "<div class='msg'>🤖 You said: "+input.value+"</div>";
-
-    input.value="";
-    chat.scrollTop=chat.scrollHeight;
-}
-</script>
-
-</body>
-</html>
