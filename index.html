@@ -1,70 +1,34 @@
-DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Kamine AI</title>
-<style>
-body{
-    margin:0;
-    background:#121212;
-    color:white;
-    font-family:Arial,sans-serif;
-}
-header{
-    background:#1f1f1f;
-    padding:15px;
-    text-align:center;
-    font-size:24px;
-    font-weight:bold;
-}
-#chat{
-    height:70vh;
-    overflow-y:auto;
-    padding:15px;
-}
-.msg{
-    background:#2d2d2d;
-    padding:10px;
-    border-radius:10px;
-    margin:10px 0;
-}
-footer{
-    display:flex;
-    padding:10px;
-}
-input{
-    flex:1;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-}
-button{
-    margin-left:10px;
-    padding:12px 20px;
-    border:none;
-    border-radius:10px;
-    background:#00c853;
-    color:white;
-}
-</style>
-</head>
-
-<body>
-
-<header>🤖 Kamine AI</header>
-
-<div id="chat">
-<div class="msg">👋 Hello! I'm Kamine.</div>
-</div>
-
-<footer>
-<input id="text" placeholder="Type a message...">
-<button onclick="send()">Send</button>
-</footer>
-
 <script>
 function send(){
     let input=document.getElementById("text");
     let chat=document.getElementById("chat");
 
-    if(input.value=="") return;
+    let msg=input.value.trim();
+    if(msg=="") return;
+
+    chat.innerHTML += "<div class='msg'>🧑 "+msg+"</div>";
+
+    let reply="দুঃখিত, আমি এখনও এটা জানি না।";
+
+    if(msg.toLowerCase()=="hi" || msg=="হাই"){
+        reply="👋 হ্যালো! আমি Kamine.";
+    }
+    else if(msg=="তোমার নাম কি"){
+        reply="🤖 আমার নাম Kamine AI.";
+    }
+    else if(msg=="কে বানিয়েছে"){
+        reply="❤️ আমাকে KM Rafi Chowdhury বানিয়েছেন।";
+    }
+    else if(msg=="সময়"){
+        reply="🕒 " + new Date().toLocaleTimeString();
+    }
+    else if(msg=="তারিখ"){
+        reply="📅 " + new Date().toLocaleDateString();
+    }
+
+    chat.innerHTML += "<div class='msg'>🤖 "+reply+"</div>";
+
+    input.value="";
+    chat.scrollTop=chat.scrollHeight;
+}
+</script>
