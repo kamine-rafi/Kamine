@@ -1,42 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamine AI</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
 <div class="app">
 
-<div class="sidebar">
+    <aside class="sidebar">
 
-<h2>🤖 Kamine</h2>
+        <div class="logo">
+            🤖
+            <h2>Kamine</h2>
+        </div>
 
-<button id="newChat">+ New Chat</button>
+        <button id="newChat">
+            + New Chat
+        </button>
 
-<div id="history"></div>
+        <div id="history"></div>
 
-<div class="bottomMenu">
-<button>⚙ Settings</button>
+        <div class="menu">
+
+            <button>⚙ Settings</button>
+
+            <button>👤 Owner</button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header>
+
+            <h1>Kamine AI Assistant</h1>
+
+            <p>Created by KM Rafi Chowdhury</p>
+
+        </header>
+
+        <div id="chat">
+
+            <div class="ai message">
+
+                👋 Welcome back.
+
+                I'm Kamine AI Assistant.
+
+            </div>
+
+        </div>
+
+        <div class="bottom">
+
+            <button id="voiceBtn">🎤</button>
+
+            <input
+            id="msg"
+            placeholder="Ask Kamine anything..."
+            >
+
+            <button onclick="send()">➤</button>
+
+        </div>
+
+    </main>
+
 </div>
 
-</div>
+<script src="script.js"></script>
 
-<div class="main">
-
-<header>
-Kamine AI Assistant
-</header>
-
-<div id="chat">
-
-<div class="message ai">
-👋 Welcome back!
-I'm Kamine AI Assistant.
-</div>
-
-</div>
-
-<div class="bottom">
-
-<input id="msg" placeholder="Ask anything...">
-
-<button onclick="send()">➤</button>
-
-</div>
-
-</div>
-
-</div>
+</body>
+</html>
