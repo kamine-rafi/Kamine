@@ -68,8 +68,7 @@ const Voice = {
 
         const speech = new SpeechSynthesisUtterance(text);
 
-        speech.lang = "en-US";
-
+        this.recognition.lang = "bn-BD";
         speech.rate = 1;
 
         speech.pitch = 1;
