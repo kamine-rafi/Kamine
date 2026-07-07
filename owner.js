@@ -1,82 +1,85 @@
-/* =====================================
+/* ==================================
    Kamine Owner System v2.0
-   Owner: KM Rafi Chowdhury
-===================================== */
+================================== */
 
-const OWNER = {
+let OWNER_MODE = false;
+let OWNER_PIN = localStorage.getItem("kamine_pin") || "1234";
 
-    name: "KM Rafi Chowdhury",
+function ownerCommand(text){
 
-    pin: "1234",
-
-    loggedIn: false
-
-};
-
-// Load saved login state
-if(localStorage.getItem("kamine_owner_login") === "true"){
-    OWNER.loggedIn = true;
-}
+const cmd = text.toLowerCase().trim();
 
 // Login
-function ownerLogin(pin){
+if(cmd==="owner login"){
 
-    if(pin === OWNER.pin){
+const pin = prompt("🔒 Enter Owner PIN");
 
-        OWNER.loggedIn = true;
+if(pin===OWNER_PIN){
 
-        localStorage.setItem("kamine_owner_login","true");
+OWNER_MODE=true;
 
-        return "✅ Welcome Owner " + OWNER.name;
+return "✅ Welcome back Boss.";
 
-    }
+}
 
-    return "❌ Wrong PIN.";
+return "❌ Wrong PIN.";
 
 }
 
 // Logout
-function ownerLogout(){
 
-    OWNER.loggedIn = false;
+if(cmd==="owner logout"){
 
-    localStorage.setItem("kamine_owner_login","false");
+OWNER_MODE=false;
 
-    return "👋 Owner logged out.";
+return "👋 Owner Mode Disabled.";
 
 }
 
 // Status
-function ownerStatus(){
 
-    if(OWNER.loggedIn){
+if(cmd==="owner mode"){
 
-        return "🔓 Owner Mode: ON";
-
-    }
-
-    return "🔒 Owner Mode: OFF";
+return OWNER_MODE ?
+"🟢 Owner Mode Enabled." :
+"🔴 Owner Mode Disabled.";
 
 }
 
 // Change PIN
-function changeOwnerPin(oldPin,newPin){
 
-    if(oldPin !== OWNER.pin){
+if(cmd.startsWith("set pin ")){
 
-        return "❌ Old PIN is incorrect.";
+if(!OWNER_MODE){
 
-    }
-
-    OWNER.pin = newPin;
-
-    return "✅ PIN changed successfully.";
+return "🔒 Login first Boss.";
 
 }
 
-// Check owner access
-function isOwner(){
+const newPin = cmd.replace("set pin ","").trim();
 
-    return OWNER.loggedIn;
+OWNER_PIN=newPin;
+
+localStorage.setItem("kamine_pin",newPin);
+
+return "✅ PIN Updated.";
+
+}
+
+// Boss
+
+if(cmd==="boss"){
+
+return "👤 You are my Boss.";
+
+}
+
+if(cmd==="who is your boss"){
+
+return "👤 My Boss is KM Rafi Chowdhury.";
+
+}
+
+return null;
 
 }
