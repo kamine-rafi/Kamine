@@ -176,3 +176,70 @@ function reply(text){
     return "🙂 Sorry Boss, I don't understand that yet.";
 
 }
+/* ==========================================
+   Kamine AI Offline v1.0
+   Part 3 - Voice Engine
+========================================== */
+
+// Voice Input
+if (typeof Voice !== "undefined") {
+
+    voiceBtn.onclick = () => {
+
+        Voice.listen();
+
+    };
+
+}
+
+// Voice Output
+function speakReply(text){
+
+    if(typeof Voice !== "undefined"){
+
+        Voice.speak(text);
+
+    }
+
+}
+
+// Send Function Upgrade
+const oldSendMessage = sendMessage;
+
+sendMessage = function(){
+
+    const text = input.value.trim();
+
+    if(text==="") return;
+
+    addMessage(text,"user");
+
+    input.value="";
+
+    setTimeout(()=>{
+
+        const ai = reply(text);
+
+        addMessage(ai,"ai");
+
+        speakReply(ai);
+
+    },400);
+
+};
+
+// Update Button
+sendBtn.onclick = sendMessage;
+
+// Update Enter
+input.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Enter"){
+
+        sendMessage();
+
+    }
+
+});
+
+console.log("🎤 Voice Ready");
