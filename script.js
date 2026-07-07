@@ -243,3 +243,136 @@ input.addEventListener("keydown",(e)=>{
 });
 
 console.log("🎤 Voice Ready");
+/* ==========================================
+   Kamine AI Offline v1.0
+   Part 4 - Memory + Owner + Chat History
+========================================== */
+
+// =========================
+// Chat History
+// =========================
+
+function saveChatHistory() {
+    localStorage.setItem("kamine_chat", chat.innerHTML);
+}
+
+function loadChatHistory() {
+
+    const history = localStorage.getItem("kamine_chat");
+
+    if (history) {
+        chat.innerHTML = history;
+    }
+
+}
+
+// =========================
+// Override addMessage
+// =========================
+
+const oldAddMessage = addMessage;
+
+addMessage = function(text, type){
+
+    oldAddMessage(text, type);
+
+    saveChatHistory();
+
+};
+
+// Load History
+window.addEventListener("load",()=>{
+
+    loadChatHistory();
+
+});
+
+// =========================
+// Boss Memory
+// =========================
+
+function rememberName(name){
+
+    localStorage.setItem("kamine_boss",name);
+
+}
+
+function getBoss(){
+
+    return localStorage.getItem("kamine_boss") || "Boss";
+
+}
+
+// =========================
+// PIN Login
+// =========================
+
+const OWNER_PIN="1234";
+
+let ownerLogged=false;
+
+function ownerLogin(){
+
+    const pin=prompt("Enter Owner PIN");
+
+    if(pin===OWNER_PIN){
+
+        ownerLogged=true;
+
+        alert("✅ Welcome Boss");
+
+    }else{
+
+        alert("❌ Wrong PIN");
+
+    }
+
+}
+
+// =========================
+// Extra Commands
+// =========================
+
+const oldProcessCommand=processCommand;
+
+processCommand=function(text){
+
+    const cmd=text.toLowerCase().trim();
+
+    if(cmd==="login"){
+
+        ownerLogin();
+
+        return "🔐 Owner Login Complete.";
+
+    }
+
+    if(cmd==="logout"){
+
+        ownerLogged=false;
+
+        return "👋 Logged Out.";
+
+    }
+
+    if(cmd==="boss"){
+
+        return "👤 Hello "+getBoss();
+
+    }
+
+    if(cmd.startsWith("my name is ")){
+
+        const name=text.substring(11);
+
+        rememberName(name);
+
+        return "😊 Nice to meet you, "+name;
+
+    }
+
+    return oldProcessCommand(text);
+
+};
+
+console.log("✅ Kamine Offline v1.0 Ready");
