@@ -69,3 +69,14 @@ button:hover{
     margin-top:18px;
     color:#58a6ff;
 }
+.lockScreen{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+height:100vh;
+
+}
