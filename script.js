@@ -72,3 +72,107 @@ input.addEventListener("keydown",(e)=>{
 });
 
 console.log("✅ Core Ready");
+/* ==========================================
+   Kamine AI Offline v1.0
+   Part 2 - Boss Mode + Commands
+========================================== */
+
+// Boss Mode
+const BOSS_NAME = "Boss";
+
+// Offline Command Processor
+function processCommand(text){
+
+    const cmd = text.trim().toLowerCase();
+
+    // Greeting
+    if(cmd==="hello" || cmd==="hi" || cmd==="hey"){
+
+        return "👋 Hello " + BOSS_NAME + "! I'm Kamine. How can I help you today?";
+
+    }
+
+    // Identity
+    if(cmd==="who are you"){
+
+        return "🤖 I'm Kamine, your personal AI assistant.";
+
+    }
+
+    // Owner
+    if(cmd==="owner"){
+
+        return "👤 My owner is KM Rafi Chowdhury.";
+
+    }
+
+    // Name
+    if(cmd==="name"){
+
+        return "🤖 My name is Kamine.";
+
+    }
+
+    // Time
+    if(cmd==="time"){
+
+        return "🕒 " + new Date().toLocaleTimeString();
+
+    }
+
+    // Date
+    if(cmd==="date"){
+
+        return "📅 " + new Date().toLocaleDateString();
+
+    }
+
+    // Thanks
+    if(cmd==="thanks" || cmd==="thank you"){
+
+        return "😊 You're welcome, Boss.";
+
+    }
+
+    // Help
+    if(cmd==="help"){
+
+        return `
+Available Commands
+
+• hello
+• owner
+• name
+• time
+• date
+• who are you
+• thanks
+• help
+`;
+
+    }
+
+    return null;
+
+}
+
+// Replace reply()
+function reply(text){
+
+    const offline = processCommand(text);
+
+    if(offline){
+
+        return offline;
+
+    }
+
+    if(typeof getOfflineReply==="function"){
+
+        return getOfflineReply(text);
+
+    }
+
+    return "🙂 Sorry Boss, I don't understand that yet.";
+
+}
