@@ -1,4 +1,3 @@
-
 const chat = document.getElementById("chat");
 const input = document.getElementById("msg");
 
@@ -16,16 +15,28 @@ function send() {
     if (text === "") return;
 
     addMessage(text, "user");
-
     input.value = "";
 
+    // Typing animation
+    const typing = document.createElement("div");
+    typing.className = "message ai";
+    typing.id = "typing";
+    typing.innerHTML = "🤖 Kamine is typing...";
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+
     setTimeout(() => {
-        addMessage("🤖 Kamine: আমি এখনো ডেভেলপমেন্টে আছি। খুব শিগগিরই OpenAI-এর সাথে সংযুক্ত হব।", "ai");
-    }, 600);
+        typing.remove();
+
+        addMessage(
+            "🤖 Kamine: আমি এখনো ডেভেলপমেন্টে আছি। খুব শীঘ্রই আমি তোমার প্রশ্নের AI উত্তর দিতে পারব। 🚀",
+            "ai"
+        );
+    }, 1500);
 }
 
-input.addEventListener("keypress", function(e){
-    if(e.key==="Enter"){
+input.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
         send();
     }
 });
