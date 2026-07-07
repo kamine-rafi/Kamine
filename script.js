@@ -81,7 +81,168 @@ themeBtn.innerHTML="🌙";
 
 document.body.style.background="#f2f2f2";
 
-document.body.style.color="#111";
+document.body.style.color="#111";/* ==========================================
+   Kamine Part 5
+   File + Export + Clear + Settings
+========================================== */
+
+// File Upload Button
+const fileBtn = document.createElement("button");
+fileBtn.innerHTML = "📎";
+document.querySelector(".bottom").prepend(fileBtn);
+
+const fileInput = document.createElement("input");
+fileInput.type = "file";
+fileInput.accept = "image/*,.pdf,.txt,.doc,.docx";
+fileInput.style.display = "none";
+document.body.appendChild(fileInput);
+
+fileBtn.onclick = () => fileInput.click();
+
+fileInput.onchange = () => {
+
+const file = fileInput.files[0];
+
+if(!file) return;
+
+addMessage(
+`📎 Selected File:<br><b>${file.name}</b><br>${Math.round(file.size/1024)} KB`,
+"user"
+);
+
+if(file.type.startsWith("image/")){
+
+const reader = new FileReader();
+
+reader.onload = e => {
+
+addMessage(
+`<img src="${e.target.result}" style="max-width:220px;border-radius:12px;">`,
+"user"
+);
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+};
+
+// Clear Chat
+const clearBtn = document.createElement("button");
+
+clearBtn.innerHTML="🗑️";
+
+document.querySelector(".bottom").appendChild(clearBtn);
+
+clearBtn.onclick=()=>{
+
+if(confirm("Clear all chats?")){
+
+chat.innerHTML="";
+
+localStorage.removeItem("kamine-chat");
+
+}
+
+};
+
+// Export Chat
+
+const exportBtn=document.createElement("button");
+
+exportBtn.innerHTML="💾";
+
+document.querySelector(".bottom").appendChild(exportBtn);
+
+exportBtn.onclick=()=>{
+
+const text=chat.innerText;
+
+const blob=new Blob([text],{type:"text/plain"});
+
+const a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="Kamine-Chat.txt";
+
+a.click();
+
+};
+
+// Settings
+
+const settingsPanel=document.createElement("div");
+
+settingsPanel.style.position="fixed";
+
+settingsPanel.style.top="60px";
+
+settingsPanel.style.right="20px";
+
+settingsPanel.style.width="260px";
+
+settingsPanel.style.background="#1f2937";
+
+settingsPanel.style.padding="20px";
+
+settingsPanel.style.borderRadius="15px";
+
+settingsPanel.style.display="none";
+
+settingsPanel.innerHTML=`
+
+<h3>⚙ Kamine Settings</h3>
+
+<hr><br>
+
+<label>
+
+<input type="checkbox" checked>
+
+Typing Animation
+
+</label>
+
+<br><br>
+
+<label>
+
+<input type="checkbox" checked>
+
+Voice
+
+</label>
+
+<br><br>
+
+<label>
+
+<input type="checkbox">
+
+Notifications
+
+</label>
+
+`;
+
+document.body.appendChild(settingsPanel);
+
+document.querySelector(".menu button").onclick=()=>{
+
+settingsPanel.style.display=
+
+settingsPanel.style.display==="none"
+
+?"block"
+
+:"none";
+
+};
+
+console.log("✅ Kamine Part 5 Loaded");
 
 themeBtn.innerHTML="☀️";
 
