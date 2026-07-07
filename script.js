@@ -407,3 +407,118 @@ async function askKamine(question){
     }
 
 }
+/* =====================================
+   Kamine Part 10
+   Smart Memory System
+===================================== */
+
+let kamineMemory = JSON.parse(localStorage.getItem("kamineMemory")) || {};
+
+// Save Memory
+function remember(key, value) {
+    kamineMemory[key] = value;
+    localStorage.setItem("kamineMemory", JSON.stringify(kamineMemory));
+}
+
+// Read Memory
+function recall(key) {
+    return kamineMemory[key] || null;
+}
+
+// Delete Memory
+function forget(key) {
+    delete kamineMemory[key];
+    localStorage.setItem("kamineMemory", JSON.stringify(kamineMemory));
+}
+
+// Command Handler
+function processCommand(text) {
+
+    text = text.trim();
+
+    // Remember
+    if(text.startsWith("/remember ")){
+
+        const data = text.replace("/remember ","");
+
+        const parts = data.split("=");
+
+        if(parts.length===2){
+
+            remember(parts[0].trim(),parts[1].trim());
+
+            addMessage(
+                "✅ Saved: "+parts[0],
+                "ai"
+            );
+
+            return true;
+
+        }
+
+    }
+
+    // Recall
+    if(text.startsWith("/recall ")){
+
+        const key = text.replace("/recall ","").trim();
+
+        const value = recall(key);
+
+        addMessage(
+
+            value
+            ? "🧠 "+key+" = "+value
+            : "❌ No memory found.",
+
+            "ai"
+
+        );
+
+        return true;
+
+    }
+
+    // Forget
+    if(text.startsWith("/forget ")){
+
+        const key=text.replace("/forget ","").trim();
+
+        forget(key);
+
+        addMessage(
+            "🗑 Memory deleted.",
+            "ai"
+        );
+
+        return true;
+
+    }
+
+    // Owner
+    if(text==="/owner"){
+
+        addMessage(
+        "👤 Owner: KM Rafi Chowdhury",
+        "ai"
+        );
+
+        return true;
+
+    }
+
+    // Version
+    if(text==="/version"){
+
+        addMessage(
+        "🤖 Kamine AI v1.0",
+        "ai"
+        );
+
+        return true;
+
+    }
+
+    return false;
+
+}
