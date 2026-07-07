@@ -1,10 +1,16 @@
-/* =====================================
+ /* =====================================
    Kamine Commands v2.0
    Owner: KM Rafi Chowdhury
 ===================================== */
 
 function getOfflineReply(text) {
+const ownerReply = ownerCommand(text);
 
+if(ownerReply){
+
+return ownerReply;
+
+}
     const msg = text.trim().toLowerCase();
 
     // Greeting
