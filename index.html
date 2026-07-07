@@ -1,85 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Kamine AI</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
 <div class="app">
 
-    <aside class="sidebar">
+    <!-- Header -->
+    <header class="header">
 
         <div class="logo">
-            🤖
-            <h2>Kamine</h2>
+            🤖 Kamine
         </div>
 
-        <button id="newChat">
-            + New Chat
-        </button>
-
-        <div id="history"></div>
-
-        <div class="menu">
-
-            <button>⚙ Settings</button>
-
-            <button>👤 Owner</button>
-
+        <div class="status">
+            ● Offline
         </div>
 
-    </aside>
+    </header>
 
-    <main class="main">
+    <!-- Chat -->
+    <main id="chat" class="chat">
 
-        <header>
-
-            <h1>Kamine AI Assistant</h1>
-
-            <p>Created by KM Rafi Chowdhury</p>
-
-        </header>
-
-        <div id="chat">
-
-            <div class="ai message">
-
-                👋 Welcome back.
-
-                I'm Kamine AI Assistant.
-
-            </div>
-
-        </div>
-
-        <div class="bottom">
-
-            <button id="voiceBtn">🎤</button>
-
-            <input
-            id="msg"
-            placeholder="Ask Kamine anything..."
-            >
-
-            <button onclick="send()">➤</button>
-
+        <div class="message ai">
+            👋 Welcome back, <b>Boss</b>.<br><br>
+            I'm <b>Kamine</b>.<br>
+            Offline Mode is Ready.
         </div>
 
     </main>
 
+    <!-- Input -->
+    <footer class="input-area">
+
+        <button id="voiceBtn" class="icon-btn">
+            🎤
+        </button>
+
+        <input
+            id="msg"
+            type="text"
+            placeholder="Message Kamine..."
+            autocomplete="off"
+        >
+
+        <button id="sendBtn" class="send-btn">
+            ➤
+        </button>
+
+    </footer>
+
 </div>
+
+<!-- JavaScript -->
 
 <script src="commands.js"></script>
 <script src="owner.js"></script>
 <script src="memory.js"></script>
 <script src="voice.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
