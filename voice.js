@@ -62,20 +62,26 @@ const Voice = {
 
     },
 
-    speak(text){
+   speak(text){
 
-        speechSynthesis.cancel();
+    speechSynthesis.cancel();
 
-        const speech = new SpeechSynthesisUtterance(text);
+    const speech = new SpeechSynthesisUtterance(text);
 
-        this.recognition.lang = "bn-BD";
-        speech.rate = 1;
+    // বাংলা অক্ষর আছে কিনা দেখবে
+    if(/[অ-হািীুূেৈোৌ০-৯]/.test(text)){
+        speech.lang = "bn-BD";
+    }else{
+        speech.lang = "en-US";
+    }
 
-        speech.pitch = 1;
+    speech.rate = 1;
+    speech.pitch = 1;
+    speech.volume = 1;
 
-        speech.volume = 1;
+    speechSynthesis.speak(speech);
 
-        speechSynthesis.speak(speech);
+}
 
     }
 
