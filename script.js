@@ -1,92 +1,45 @@
-// ======================================
-// Kamine AI v2 - Core Engine
-// Owner: KM Rafi Chowdhury
-// ======================================
+/* ==========================================
+   Kamine AI Offline v1.0
+   Core Engine
+========================================== */
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("msg");
-const newChat = document.getElementById("newChat");
-
-// Local Storage Key
-const STORAGE_KEY = "kamine_chat_v2";
-
-// Load Chat
-window.onload = () => {
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if(saved){
-
-        chat.innerHTML = saved;
-
-    }
-
-}
-
-// Save Chat
-function saveChat(){
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        chat.innerHTML
-    );
-
-}
+const sendBtn = document.getElementById("sendBtn");
+const voiceBtn = document.getElementById("voiceBtn");
 
 // Add Message
-function addMessage(text,type){
+function addMessage(text, type) {
 
-    const div=document.createElement("div");
+    const div = document.createElement("div");
 
-    div.className=`message ${type}`;
+    div.className = "message " + type;
 
-    div.innerHTML=text;
+    div.innerHTML = text;
 
     chat.appendChild(div);
 
-    chat.scrollTop=chat.scrollHeight;
-
-    saveChat();
+    chat.scrollTop = chat.scrollHeight;
 
 }
 
-// Fake AI
-function fakeReply(text){
+// AI Reply
+function reply(text){
 
-    text=text.toLowerCase();
+    if(typeof getOfflineReply === "function"){
 
-    if(text.includes("hello") || text.includes("hi")){
-
-        return "👋 Hello! I am Kamine AI.";
+        return getOfflineReply(text);
 
     }
 
-    if(text.includes("owner")){
-
-        return "👤 My owner is KM Rafi Chowdhury.";
-
-    }
-
-    if(text.includes("name")){
-
-        return "🤖 My name is Kamine.";
-
-    }
-
-    if(text.includes("time")){
-
-        return new Date().toLocaleTimeString();
-
-    }
-
-    return "🙂 I'm ready. Soon I'll connect to OpenAI.";
+    return "Hello Boss.";
 
 }
 
 // Send
-function send(){
+function sendMessage(){
 
-    const text=input.value.trim();
+    const text = input.value.trim();
 
     if(text==="") return;
 
@@ -94,122 +47,28 @@ function send(){
 
     input.value="";
 
-    const typing=document.createElement("div");
-
-    typing.className="message ai";
-
-    typing.innerHTML="🤖 Kamine is typing...";
-
-    chat.appendChild(typing);
-
-    chat.scrollTop=chat.scrollHeight;
-
     setTimeout(()=>{
 
-        typing.remove();
+        const ai = reply(text);
 
-        addMessage(fakeReply(text),"ai");
+        addMessage(ai,"ai");
 
-    },700);
+    },400);
 
 }
 
-// Enter Key
+// Button
+sendBtn.onclick = sendMessage;
+
+// Enter
 input.addEventListener("keydown",(e)=>{
 
     if(e.key==="Enter"){
 
-        send();
+        sendMessage();
 
     }
 
 });
 
-// New Chat
-newChat.onclick=()=>{
-
-    if(confirm("Start a new chat?")){
-
-        chat.innerHTML=`
-        <div class="message ai">
-        👋 Welcome to Kamine AI.
-        </div>
-        `;
-
-        saveChat();
-
-    }
-
-};
-
-console.log("✅ Kamine Core Loaded");
-/* ============================
-   Kamine AI API (Step 2)
-============================ */
-
-async function askAI(question) {
-
-    try {
-
-        const response = await fetch("https://YOUR_BACKEND_URL/chat", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                message: question
-            })
-
-        });
-
-        const data = await response.json();
-
-        return data.reply;
-
-    } catch (err) {
-
-        return "⚠️ AI server is offline.";
-
-    }
-
-}
-/* ====================================
-   Kamine Owner Mode (Part 11)
-==================================== */
-
-const OWNER_NAME = "KM Rafi Chowdhury";
-const OWNER_PASSWORD = "1234"; // পরে পরিবর্তন করবে
-
-let ownerMode = localStorage.getItem("ownerMode") === "true";
-
-function ownerLogin() {
-
-    const pass = prompt("🔐 Enter Owner Password");
-
-    if (pass === OWNER_PASSWORD) {
-
-        ownerMode = true;
-        localStorage.setItem("ownerMode", "true");
-
-        alert("✅ Welcome Owner " + OWNER_NAME);
-
-    } else {
-
-        alert("❌ Wrong Password");
-
-    }
-
-}
-
-function ownerLogout() {
-
-    ownerMode = false;
-
-    localStorage.setItem("ownerMode", "false");
-
-    alert("👋 Owner Logged Out");
-
-}
+console.log("✅ Core Ready");
