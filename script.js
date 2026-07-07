@@ -287,4 +287,54 @@ console.log("✅ Theme Ready");
 console.log("✅ Kamine v0.6");
         });
     }
+}); 
+/* ============================
+   Kamine Part 6
+   Chat System
+============================ */
+
+const input = document.querySelector("input");
+const sendBtn = document.querySelector(".send-btn");
+const messages = document.querySelector(".messages");
+
+if (sendBtn && input && messages) {
+
+sendBtn.addEventListener("click", sendMessage);
+
+input.addEventListener("keypress", function(e){
+if(e.key==="Enter"){
+sendMessage();
+}
 });
+
+function sendMessage(){
+
+const text=input.value.trim();
+
+if(text==="") return;
+
+messages.innerHTML += `
+<div class="user-message">
+👤 ${text}
+</div>
+`;
+
+input.value="";
+
+setTimeout(()=>{
+
+messages.innerHTML += `
+<div class="bot-message">
+🤖 Kamine: আমি এখন Demo Mode-এ আছি।
+তোমার মেসেজ ছিল:
+"${text}"
+</div>
+`;
+
+messages.scrollTop=messages.scrollHeight;
+
+},700);
+
+}
+
+}
