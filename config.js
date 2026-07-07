@@ -60,3 +60,48 @@ ownerBtn.onclick = () => {
 document.getElementById("closeOwner").onclick = () => {
     ownerPanel.style.display = "none";
 };
+/* =====================================
+   Kamine Part 9
+   Owner PIN Lock
+===================================== */
+
+const OWNER_PIN = "1590"; // চাইলে পরে বদলাতে পারবি
+
+window.addEventListener("load", () => {
+
+    if (sessionStorage.getItem("kamineUnlocked")) return;
+
+    setTimeout(() => {
+
+        const pin = prompt("🔐 Enter Owner PIN");
+
+        if (pin === OWNER_PIN) {
+
+            sessionStorage.setItem("kamineUnlocked", "true");
+
+            alert("✅ Welcome KM Rafi Chowdhury");
+
+        } else {
+
+            document.body.innerHTML = `
+            <div style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            background:#0b1220;
+            color:white;
+            font-family:Poppins;
+            text-align:center;
+            ">
+            <div>
+            <h1>🔒 Access Denied</h1>
+            <p>Incorrect PIN</p>
+            </div>
+            </div>
+            `;
+        }
+
+    },500);
+
+});
