@@ -143,3 +143,36 @@ newChat.onclick=()=>{
 };
 
 console.log("✅ Kamine Core Loaded");
+/* ============================
+   Kamine AI API (Step 2)
+============================ */
+
+async function askAI(question) {
+
+    try {
+
+        const response = await fetch("https://YOUR_BACKEND_URL/chat", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                message: question
+            })
+
+        });
+
+        const data = await response.json();
+
+        return data.reply;
+
+    } catch (err) {
+
+        return "⚠️ AI server is offline.";
+
+    }
+
+}
