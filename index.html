@@ -1,34 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamine AI</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#0d1117;
+color:white;
+display:flex;
+flex-direction:column;
+height:100vh;
+}
+
+header{
+background:#161b22;
+padding:15px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+color:#58a6ff;
+}
+
+#chat{
+flex:1;
+padding:15px;
+overflow-y:auto;
+}
+
+.message{
+margin:10px 0;
+padding:12px;
+border-radius:10px;
+max-width:80%;
+}
+
+.user{
+background:#238636;
+margin-left:auto;
+}
+
+.ai{
+background:#30363d;
+}
+
+.bottom{
+display:flex;
+padding:10px;
+background:#161b22;
+}
+
+input{
+flex:1;
+padding:12px;
+border:none;
+border-radius:10px;
+outline:none;
+font-size:16px;
+}
+
+button{
+margin-left:10px;
+padding:12px 18px;
+border:none;
+border-radius:10px;
+background:#58a6ff;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1f6feb;
+}
+</style>
+</head>
+
+<body>
+
+<header>🤖 Kamine AI</header>
+
+<div id="chat">
+<div class="message ai">
+Hello! আমি Kamine। 😊
+</div>
+</div>
+
+<div class="bottom">
+<input id="msg" placeholder="Type a message...">
+<button onclick="send()">Send</button>
+</div>
+
 <script>
 function send(){
-    let input=document.getElementById("text");
-    let chat=document.getElementById("chat");
 
-    let msg=input.value.trim();
-    if(msg=="") return;
+let input=document.getElementById("msg");
 
-    chat.innerHTML += "<div class='msg'>🧑 "+msg+"</div>";
+if(input.value=="") return;
 
-    let reply="দুঃখিত, আমি এখনও এটা জানি না।";
+let chat=document.getElementById("chat");
 
-    if(msg.toLowerCase()=="hi" || msg=="হাই"){
-        reply="👋 হ্যালো! আমি Kamine.";
-    }
-    else if(msg=="তোমার নাম কি"){
-        reply="🤖 আমার নাম Kamine AI.";
-    }
-    else if(msg=="কে বানিয়েছে"){
-        reply="❤️ আমাকে KM Rafi Chowdhury বানিয়েছেন।";
-    }
-    else if(msg=="সময়"){
-        reply="🕒 " + new Date().toLocaleTimeString();
-    }
-    else if(msg=="তারিখ"){
-        reply="📅 " + new Date().toLocaleDateString();
-    }
+chat.innerHTML+=`
+<div class="message user">
+${input.value}
+</div>
+`;
 
-    chat.innerHTML += "<div class='msg'>🤖 "+reply+"</div>";
+setTimeout(()=>{
 
-    input.value="";
-    chat.scrollTop=chat.scrollHeight;
+chat.innerHTML+=`
+<div class="message ai">
+AI এখনও সংযুক্ত করা হয়নি।
+</div>
+`;
+
+chat.scrollTop=chat.scrollHeight;
+
+},500);
+
+input.value="";
+
 }
 </script>
+
+</body>
+</html>
