@@ -176,3 +176,40 @@ async function askAI(question) {
     }
 
 }
+/* ====================================
+   Kamine Owner Mode (Part 11)
+==================================== */
+
+const OWNER_NAME = "KM Rafi Chowdhury";
+const OWNER_PASSWORD = "1234"; // পরে পরিবর্তন করবে
+
+let ownerMode = localStorage.getItem("ownerMode") === "true";
+
+function ownerLogin() {
+
+    const pass = prompt("🔐 Enter Owner Password");
+
+    if (pass === OWNER_PASSWORD) {
+
+        ownerMode = true;
+        localStorage.setItem("ownerMode", "true");
+
+        alert("✅ Welcome Owner " + OWNER_NAME);
+
+    } else {
+
+        alert("❌ Wrong Password");
+
+    }
+
+}
+
+function ownerLogout() {
+
+    ownerMode = false;
+
+    localStorage.setItem("ownerMode", "false");
+
+    alert("👋 Owner Logged Out");
+
+}
