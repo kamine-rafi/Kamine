@@ -338,3 +338,38 @@ messages.scrollTop=messages.scrollHeight;
 }
 
 }
+/* ==========================
+   Kamine Part 7
+   AI API Connection
+========================== */
+
+async function askKamine(question){
+
+    try{
+
+        const response = await fetch(
+            "https://YOUR_WORKER_URL/chat",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    message:question
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        return data.reply;
+
+    }catch(err){
+
+        console.error(err);
+
+        return "❌ Kamine server is offline.";
+
+    }
+
+}
