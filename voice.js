@@ -60,3 +60,46 @@ let currentLang = "bn-BD";
     };
 
 })();
+// ==========================
+// Start Voice
+// ==========================
+
+function startVoice() {
+
+    if (!recognition) return;
+
+    recognition.lang = currentLang;
+
+    recognition.start();
+
+}
+
+// ==========================
+// Speak
+// ==========================
+
+function speak(text) {
+
+    speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    if (/[অ-হ]/.test(text)) {
+
+        speech.lang = "bn-BD";
+        currentLang = "bn-BD";
+
+    } else {
+
+        speech.lang = "en-US";
+        currentLang = "en-US";
+
+    }
+
+    speech.rate = 1;
+    speech.pitch = 1;
+    speech.volume = 1;
+
+    speechSynthesis.speak(speech);
+
+}
