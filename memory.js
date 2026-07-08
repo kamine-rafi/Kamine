@@ -191,7 +191,81 @@ function memoryReply(text) {
         return "🙂 I don't know your favorite color yet.";
 
     }
+    // ==========================
+    // বাংলা - নাম মনে রাখা
+    // ==========================
 
+    if (text.startsWith("আমার নাম ")) {
+
+        const name = text.replace("আমার নাম ", "");
+
+        setUserName(name);
+
+        return "😊 ঠিক আছে Boss, তোমার নাম " + name + " মনে রাখলাম।";
+
+    }
+
+    if (text === "আমার নাম কি") {
+
+        return "😊 Boss, তোমার নাম " + getUserName() + "।";
+
+    }
+
+    // ==========================
+    // বাংলা - বয়স মনে রাখা
+    // ==========================
+
+    if (text.startsWith("আমার বয়স ")) {
+
+        const age = text.replace("আমার বয়স ", "");
+
+        memorySet("user_age", age);
+
+        return "🎂 ঠিক আছে Boss, তোমার বয়স " + age + " বছর মনে রাখলাম।";
+
+    }
+
+    if (text === "আমার বয়স কত") {
+
+        const age = memoryGet("user_age");
+
+        if (age) {
+
+            return "🎂 Boss, তোমার বয়স " + age + " বছর।";
+
+        }
+
+        return "🙂 Boss, এখনো তোমার বয়স জানি না।";
+
+    }
+
+    // ==========================
+    // বাংলা - প্রিয় রং
+    // ==========================
+
+    if (text.startsWith("আমার প্রিয় রং ")) {
+
+        const color = text.replace("আমার প্রিয় রং ", "");
+
+        memorySet("favorite_color", color);
+
+        return "🎨 ঠিক আছে Boss, তোমার প্রিয় রং " + color + " মনে রাখলাম।";
+
+    }
+
+    if (text === "আমার প্রিয় রং কি") {
+
+        const color = memoryGet("favorite_color");
+
+        if (color) {
+
+            return "🎨 Boss, তোমার প্রিয় রং " + color + "।";
+
+        }
+
+        return "🙂 Boss, এখনো তোমার প্রিয় রং জানি না।";
+
+    }
     return null;
 
 }
