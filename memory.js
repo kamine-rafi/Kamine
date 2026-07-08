@@ -1,49 +1,41 @@
-/* =====================================
-   Kamine Memory v2.0
-   Owner: KM Rafi Chowdhury
-===================================== */
+/* ==========================================
+   Kamine AI v2.0
+   Memory System
+========================================== */
 
-const Memory = {
-
-    save(key, value) {
-        localStorage.setItem("kamine_" + key, JSON.stringify(value));
-    },
-
-    load(key) {
-        const data = localStorage.getItem("kamine_" + key);
-
-        if (!data) return null;
-
-        return JSON.parse(data);
-    },
-
-    remove(key) {
-        localStorage.removeItem("kamine_" + key);
-    },
-
-    clear() {
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith("kamine_")) {
-                localStorage.removeItem(key);
-            }
-        });
-    }
-
-};
+"use strict";
 
 // ==========================
-// Owner Info
+// Save Data
 // ==========================
 
-function saveOwner(name){
+function memorySet(key, value) {
 
-    Memory.save("owner_name", name);
+    localStorage.setItem("kamine_" + key, JSON.stringify(value));
 
 }
 
-function getOwner(){
+// ==========================
+// Load Data
+// ==========================
 
-    return Memory.load("owner_name") || "KM Rafi Chowdhury";
+function memoryGet(key) {
+
+    const data = localStorage.getItem("kamine_" + key);
+
+    if (!data) return null;
+
+    return JSON.parse(data);
+
+}
+
+// ==========================
+// Delete Data
+// ==========================
+
+function memoryRemove(key) {
+
+    localStorage.removeItem("kamine_" + key);
 
 }
 
@@ -51,15 +43,35 @@ function getOwner(){
 // User Name
 // ==========================
 
-function saveUser(name){
+function setUserName(name) {
 
-    Memory.save("user_name", name);
+    memorySet("user_name", name);
 
 }
 
-function getUser(){
+function getUserName() {
 
-    return Memory.load("user_name") || "Guest";
+    return memoryGet("user_name") || "Boss";
+
+}
+
+// ==========================
+// Notes
+// ==========================
+
+function saveNote(note) {
+
+    let notes = memoryGet("notes") || [];
+
+    notes.push(note);
+
+    memorySet("notes", notes);
+
+}
+
+function getNotes() {
+
+    return memoryGet("notes") || [];
 
 }
 
@@ -67,30 +79,34 @@ function getUser(){
 // Chat History
 // ==========================
 
-function saveChat(chat){
+function saveChat() {
 
-    Memory.save("chat_history", chat);
+    const chat = document.getElementById("chat");
 
-}
+    if (chat) {
 
-function loadChat(){
+        memorySet("chat_history", chat.innerHTML);
 
-    return Memory.load("chat_history") || [];
-
-}
-
-// ==========================
-// Theme
-// ==========================
-
-function saveTheme(theme){
-
-    Memory.save("theme", theme);
+    }
 
 }
 
-function getTheme(){
+function loadChat() {
 
-    return Memory.load("theme") || "dark";
+    const history = memoryGet("chat_history");
+
+    if (history) {
+
+        const chat = document.getElementById("chat");
+
+        if (chat) {
+
+            chat.innerHTML = history;
+
+        }
+
+    }
 
 }
+
+console.log("✅ Memory System Loaded");
