@@ -1,85 +1,101 @@
-/* ==================================
-   Kamine Owner System v2.0
-================================== */
+/* ==========================================
+   Kamine AI v2.0
+   Owner System
+========================================== */
 
-let OWNER_MODE = false;
-let OWNER_PIN = localStorage.getItem("kamine_pin") || "1234";
+"use strict";
+
+// ==========================
+// Owner Settings
+// ==========================
+
+let ownerMode = false;
+
+let ownerPin = localStorage.getItem("kamine_owner_pin") || "1234";
+
+// ==========================
+// Owner Commands
+// ==========================
 
 function ownerCommand(text){
 
-const cmd = text.toLowerCase().trim();
+    const msg = text.trim().toLowerCase();
 
-// Login
-if(cmd==="owner login"){
+    // Login
+    if(msg === "owner login"){
 
-const pin = prompt("🔒 Enter Owner PIN");
+        const pin = prompt("🔐 Enter Owner PIN");
 
-if(pin===OWNER_PIN){
+        if(pin === ownerPin){
 
-OWNER_MODE=true;
+            ownerMode = true;
 
-return "✅ Welcome back Boss.";
+            return "✅ Welcome back Boss. Owner Mode Enabled.";
+
+        }
+
+        return "❌ Wrong PIN.";
+
+    }
+
+    // Logout
+    if(msg === "owner logout"){
+
+        ownerMode = false;
+
+        return "👋 Owner Mode Disabled.";
+
+    }
+
+    // Status
+    if(msg === "owner mode"){
+
+        return ownerMode
+            ? "🟢 Owner Mode Enabled."
+            : "🔴 Owner Mode Disabled.";
+
+    }
+
+    // Change PIN
+    if(msg.startsWith("set pin ")){
+
+        if(!ownerMode){
+
+            return "🔒 Please login first.";
+
+        }
+
+        const newPin = msg.replace("set pin","").trim();
+
+        if(newPin.length < 4){
+
+            return "❌ PIN must be at least 4 digits.";
+
+        }
+
+        ownerPin = newPin;
+
+        localStorage.setItem("kamine_owner_pin", ownerPin);
+
+        return "✅ Owner PIN Updated.";
+
+    }
+
+    // Boss
+    if(msg === "who is your boss"){
+
+        return "👤 My Boss is KM Rafi Chowdhury.";
+
+    }
+
+    if(msg === "am i your boss"){
+
+        return "❤️ Yes Boss. You are my creator.";
+
+    }
+
+    return null;
 
 }
 
-return "❌ Wrong PIN.";
-
-}
-
-// Logout
-
-if(cmd==="owner logout"){
-
-OWNER_MODE=false;
-
-return "👋 Owner Mode Disabled.";
-
-}
-
-// Status
-
-if(cmd==="owner mode"){
-
-return OWNER_MODE ?
-"🟢 Owner Mode Enabled." :
-"🔴 Owner Mode Disabled.";
-
-}
-
-// Change PIN
-
-if(cmd.startsWith("set pin ")){
-
-if(!OWNER_MODE){
-
-return "🔒 Login first Boss.";
-
-}
-
-const newPin = cmd.replace("set pin ","").trim();
-
-OWNER_PIN=newPin;
-
-localStorage.setItem("kamine_pin",newPin);
-
-return "✅ PIN Updated.";
-
-}
-
-// Boss
-
-if(cmd==="boss"){
-
-return "👤 You are my Boss.";
-
-}
-
-if(cmd==="who is your boss"){
-
-return "👤 My Boss is KM Rafi Chowdhury.";
-
-}
-
-return null;
-
-}
+console.log("✅ Owner System Loaded");
