@@ -41,17 +41,22 @@ function addMessage(text, type = "ai") {
 // AI Reply
 // ==========================
 
-function getReply(text) {
+    function getReply(text) {
 
-    if (typeof getOfflineReply === "function") {
-
-        return getOfflineReply(text);
-
+    // Memory আগে চেক করবে
+    if (typeof memoryReply === "function") {
+        const reply = memoryReply(text);
+        if (reply) return reply;
     }
 
-    return "🙂 Kamine Brain Offline.";
+    // তারপর Offline Commands
+    if (typeof getOfflineReply === "function") {
+        return getOfflineReply(text);
+    }
 
+    return "🙂 Sorry Boss, I don't know that yet.";
 }
+
 
 // ==========================
 // Send Message
