@@ -215,57 +215,52 @@ function memoryReply(text) {
     // বাংলা - বয়স মনে রাখা
     // ==========================
 
-    if (text.startsWith("আমার বয়স ")) {
+    //বয়স বলবে
+if (text.startsWith("আমার বয়স ") && text !== "আমার বয়স কত") {
 
-        const age = text.replace("আমার বয়স ", "");
+    const age = text.replace("আমার বয়স ", "");
 
-        memorySet("user_age", age);
+    memorySet("user_age", age);
 
-        return "🎂 ঠিক আছে Boss, তোমার বয়স " + age + " বছর মনে রাখলাম।";
+    return "🎂 ঠিক আছে Boss, তোমার বয়স " + age + " বছর মনে রাখলাম।";
+}
 
+// বয়স বলবে
+if (text === "আমার বয়স কত") {
+
+    const age = memoryGet("user_age");
+
+    if (age) {
+        return "🎂 তোমার বয়স " + age + " বছর।";
     }
 
-    if (text === "আমার বয়স কত") {
-
-        const age = memoryGet("user_age");
-
-        if (age) {
-
-            return "🎂 Boss, তোমার বয়স " + age + " বছর।";
-
-        }
-
-        return "🙂 Boss, এখনো তোমার বয়স জানি না।";
-
-    }
-
+    return "🙂 আমি এখনো তোমার বয়স জানি না।";
+}
     // ==========================
     // বাংলা - প্রিয় রং
     // ==========================
 
-    if (text.startsWith("আমার প্রিয় রং ")) {
+    // প্রিয় রং Save
+if (text.startsWith("আমার প্রিয় রং ")) {
 
-        const color = text.replace("আমার প্রিয় রং ", "");
+    const color = text.replace("আমার প্রিয় রং ", "");
 
-        memorySet("favorite_color", color);
+    memorySet("favorite_color", color);
 
-        return "🎨 ঠিক আছে Boss, তোমার প্রিয় রং " + color + " মনে রাখলাম।";
+    return "🎨 ঠিক আছে Boss, তোমার প্রিয় রং " + color + " মনে রাখলাম।";
+}
 
+// প্রিয় রং বলবে
+if (text === "আমার প্রিয় রং কি") {
+
+    const color = memoryGet("favorite_color");
+
+    if (color) {
+        return "🎨 তোমার প্রিয় রং " + color + "।";
     }
 
-    if (text === "আমার প্রিয় রং কি") {
-
-        const color = memoryGet("favorite_color");
-
-        if (color) {
-
-            return "🎨 Boss, তোমার প্রিয় রং " + color + "।";
-
-        }
-
-        return "🙂 Boss, এখনো তোমার প্রিয় রং জানি না।";
-
-    }
+    return "🙂 আমি এখনো তোমার প্রিয় রং জানি না।";
+}
     return null;
 
 }
