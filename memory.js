@@ -108,5 +108,27 @@ function loadChat() {
     }
 
 }
+function memoryReply(text) {
 
+    text = text.toLowerCase().trim();
+
+    if (text.startsWith("my name is ")) {
+
+        const name = text.replace("my name is ", "");
+
+        setUserName(name);
+
+        return "😊 Nice to meet you, " + name + ".";
+
+    }
+
+    if (text === "what is my name") {
+
+        return "😊 Your name is " + getUserName() + ".";
+
+    }
+
+    return null;
+
+}
 console.log("✅ Memory System Loaded");
