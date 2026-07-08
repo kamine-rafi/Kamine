@@ -1,90 +1,110 @@
-/* =========================================
-   Kamine Voice Engine v2.0
-   Owner: KM Rafi Chowdhury
-========================================= */
+/* ==========================================
+   Kamine AI v2.0
+   Voice Engine
+========================================== */
 
-// Check browser support
-const Voice = {
+"use strict";
 
-    recognition: null,
+let recognition = null;
 
-    init() {
+// Initialize Voice
+(function initVoice() {
 
-        const SpeechRecognition =
-            window.SpeechRecognition ||
-            window.webkitSpeechRecognition;
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
-        if (!SpeechRecognition) {
-            console.log("Speech Recognition Not Supported");
-            return;
-        }
+    if (!SpeechRecognition) {
+        console.log("Speech Recognition Not Supported");
+        return;
+    }
 
-        this.recognition = new SpeechRecognition();
+    recognition = new SpeechRecognition();
 
-        this.recognition.lang = "en-US";
-        this.recognition.continuous = false;
-        this.recognition.interimResults = false;
+    // বাংলা + ইংরেজি
+    recognition.lang = "bn-BD";
 
-        this.recognition.onstart = () => {
-            console.log("🎤 Listening...");
-        };
+    recognition.interimResults = false;
+    recognition.continuous = false;
 
-        this.recognition.onend = () => {
-            console.log("🛑 Voice Stopped");
-        };
+    recognition.onresult = function (event) {
 
-        this.recognition.onerror = (e) => {
-            console.log("Voice Error:", e.error);
-        };
+        const text = event.results[0][0].transcript;
 
-        this.recognition.onresult = (event) => {
+        const input = document.getElementById("msg");
 
-            const text =
-                event.results[0][0].transcript;
+        input.value = text;
 
-            console.log("User:", text);
+        sendMessage();
 
-            if(typeof input !== "undefined"){
-                input.value = text;
-            }
+    };
 
-        };
+    recognition.onerror = function (e) {
 
-    },
+        console.log("Voice Error:", e.error);
 
-    listen() {
+    };
 
-        if(this.recognition){
+})();
 
-            this.recognition.start();
+// ==========================
+// Start Voice
+// ==========================
 
-        }
+function startVoice() {
 
-    },
+    if (recognition) {
 
-   speak(text){
+        recognition.start();
+
+    } else {
+
+        alert("Voice is not supported on this browser.");
+
+    }
+
+}
+
+// ==========================
+// Speak
+// ==========================
+
+function speak(text) {
 
     speechSynthesis.cancel();
 
     const speech = new SpeechSynthesisUtterance(text);
 
-    // বাংলা অক্ষর আছে কিনা দেখবে
-    if(/[অ-হািীুূেৈোৌ০-৯]/.test(text)){
+    // বাংলা থাকলে বাংলা ভয়েস
+    if (/[অ-হ]/.test(text)) {
+
         speech.lang = "bn-BD";
-    }else{
+
+    } else {
+
         speech.lang = "en-US";
+
     }
 
     speech.rate = 1;
     speech.pitch = 1;
     speech.volume = 1;
 
+    // Female voice পাওয়া গেলে সেটি ব্যবহার করবে
+    const voices = speechSynthesis.getVoices();
+
+    const female = voices.find(v =>
+        /female|zira|aria|samantha|google/i.test(v.name)
+    );
+
+    if (female) {
+
+        speech.voice = female;
+
+    }
+
     speechSynthesis.speak(speech);
 
 }
 
-    }
-
-};
-
-Voice.init();
+console.log("✅ Voice Engine Loaded");
