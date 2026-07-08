@@ -1,5 +1,5 @@
 /* ==========================================
-   Kamine AI v2.0
+   Kamine AI v2.1
    Memory System
 ========================================== */
 
@@ -108,9 +108,17 @@ function loadChat() {
     }
 
 }
+// ==========================
+// Smart Memory Reply
+// ==========================
+
 function memoryReply(text) {
 
     text = text.toLowerCase().trim();
+
+    // ==========================
+    // Name Memory
+    // ==========================
 
     if (text.startsWith("my name is ")) {
 
@@ -128,7 +136,64 @@ function memoryReply(text) {
 
     }
 
+    // ==========================
+    // Age Memory
+    // ==========================
+
+    if (text.startsWith("my age is ")) {
+
+        const age = text.replace("my age is ", "");
+
+        memorySet("user_age", age);
+
+        return "🎂 Okay Boss, I will remember that you are " + age + " years old.";
+
+    }
+
+    if (text === "how old am i") {
+
+        const age = memoryGet("user_age");
+
+        if (age) {
+
+            return "🎂 You are " + age + " years old.";
+
+        }
+
+        return "🙂 I don't know your age yet.";
+
+    }
+
+    // ==========================
+    // Favorite Color
+    // ==========================
+
+    if (text.startsWith("my favorite color is ")) {
+
+        const color = text.replace("my favorite color is ", "");
+
+        memorySet("favorite_color", color);
+
+        return "🎨 Okay Boss, I will remember your favorite color is " + color + ".";
+
+    }
+
+    if (text === "what is my favorite color") {
+
+        const color = memoryGet("favorite_color");
+
+        if (color) {
+
+            return "🎨 Your favorite color is " + color + ".";
+
+        }
+
+        return "🙂 I don't know your favorite color yet.";
+
+    }
+
     return null;
 
 }
+
 console.log("✅ Memory System Loaded");
