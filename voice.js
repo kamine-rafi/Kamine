@@ -49,47 +49,40 @@ let currentLang = "bn-BD";
     const text = event.results[0][0].transcript.trim();
     const lower = text.toLowerCase();
 
-    // ===== Wake Word =====
+    // Wake Word
     if (
         lower === "hey kamine" ||
         lower === "hi kamine" ||
-        lower === "হেই কামিন" ||
-        lower === "এই কামিন"
+        lower === "হেই কামিনে" ||
+        lower === "এই কামিনে"
     ) {
 
         if (currentLang === "bn-BD") {
-    speak("জি বস, আমি শুনছি।");
-} else {
-    speak("Yes Boss, I am listening.");
-}
-        setTimeout(() => {
+            speak("জি বস, আমি শুনছি।");
+        } else {
+            speak("Yes Boss, I am listening.");
+        }
 
+        setTimeout(() => {
             recognition.lang = currentLang;
             recognition.start();
-
         }, 1200);
 
         return;
     }
 
-    // ===== Language Detect =====
+    // Language Detect
     if (/[অ-হ]/.test(text)) {
-
         currentLang = "bn-BD";
-
     } else {
-
         currentLang = "en-US";
-
     }
 
     document.getElementById("msg").value = text;
-
     sendMessage();
 
 };
-
-})();
+    )();
 // ==========================
 // Start Voice
 // ==========================
