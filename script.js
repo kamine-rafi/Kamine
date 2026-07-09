@@ -139,3 +139,19 @@ window.onload = function () {
 };
 
 console.log("✅ Kamine Core Loaded");
+
+window.addEventListener("load", function () {
+
+    setTimeout(function () {
+
+        const splash = document.getElementById("splash");
+
+        if (splash) {
+
+            splash.classList.add("hideSplash");
+
+        }
+
+    }, 3000);
+
+});
