@@ -38,18 +38,56 @@ let currentLang = "bn-BD";
     };
 
     
-https://kamine-rafi.github.io/Kamine/
     recognition.onend = function () {
 
         console.log("🎤 Voice End");
 
     };
 
-    recognition.onerror = function (e) {
+    recognition.onresult = function (event) {
 
-        console.log("Voice Error:", e.error);
+    const text = event.results[0][0].transcript.trim();
+    const lower = text.toLowerCase();
 
-    };
+    // ===== Wake Word =====
+    if (
+        lower === "hey kamine" ||
+        lower === "hi kamine" ||
+        lower === "হেই কামিন" ||
+        lower === "এই কামিন"
+    ) {
+
+        if (currentLang === "bn-BD") {
+    speak("জি বস, আমি শুনছি।");
+} else {
+    speak("Yes Boss, I am listening.");
+}
+        setTimeout(() => {
+
+            recognition.lang = currentLang;
+            recognition.start();
+
+        }, 1200);
+
+        return;
+    }
+
+    // ===== Language Detect =====
+    if (/[অ-হ]/.test(text)) {
+
+        currentLang = "bn-BD";
+
+    } else {
+
+        currentLang = "en-US";
+
+    }
+
+    document.getElementById("msg").value = text;
+
+    sendMessage();
+
+};
 
 })();
 // ==========================
