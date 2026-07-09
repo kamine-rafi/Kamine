@@ -37,16 +37,8 @@ let currentLang = "bn-BD";
 
     };
 
-    recognition.onresult = function (event) {
-
-        const text = event.results[0][0].transcript;
-
-        document.getElementById("msg").value = text;
-
-        sendMessage();
-
-    };
-
+    
+https://kamine-rafi.github.io/Kamine/
     recognition.onend = function () {
 
         console.log("🎤 Voice End");
