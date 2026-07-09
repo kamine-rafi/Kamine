@@ -251,3 +251,33 @@ font-size:15px;
 }
 
 }
+recognition.onresult = function (event) {
+
+    const text = event.results[0][0].transcript.trim();
+
+    const lower = text.toLowerCase();
+
+    // Wake Word
+    if (
+        lower.includes("hey kamine i am your boss") ||
+        lower.includes("hi kamine i am your boss") ||
+        lower.includes("হেই কামিন আমি তোমার বস")
+    ) {
+
+        speak("Welcome back Boss. I am listening.");
+
+        setTimeout(() => {
+
+            recognition.start();
+
+        }, 1500);
+
+        return;
+
+    }
+
+    document.getElementById("msg").value = text;
+
+    sendMessage();
+
+};
