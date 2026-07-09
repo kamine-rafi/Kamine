@@ -148,7 +148,13 @@ window.addEventListener("load", function () {
 
         if (splash) {
 
-            splash.classList.add("hideSplash");
+            splash.classList.add("splash-hide");
+
+            setTimeout(function () {
+
+                splash.remove();
+
+            }, 800);
 
         }
 
