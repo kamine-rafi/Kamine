@@ -53,7 +53,7 @@ async function getReply(text) {
     // ২. তারপর Offline Commands চেক করবে
     if (typeof getOfflineReply === "function") {
         const reply = getOfflineReply(text);
-        // যদি অফলাইন কমান্ডে কোনো নির্দিষ্ট উত্তর থাকে (যা 'Sorry Boss' নয়), তবে সেটাই দেবে
+        // যদি অফলাইন কমান্ডে কোনো নির্দিষ্ট উত্তর থাকে (যা 'Sorry Boss' নয়), তবে সেটাই দেবে
         if (reply && !reply.includes("Sorry Boss")) {
             return reply;
         }
@@ -71,14 +71,20 @@ async function getReply(text) {
 
         const data = await response.json();
         
+        // যদি ব্যাক-এন্ড কোনো এরর অবজেক্ট পাঠায়
+        if (data.error) {
+            return `❌ সার্ভার এরর: ${data.error}`;
+        }
+        
         if (data.reply) {
             return data.reply;
         } else {
-            return "Thinking error, Boss. Check Vercel logs.";
+            return "Thinking error, Boss. OpenAI থেকে খালি রেসপন্স এসেছে।";
         }
     } catch (error) {
         console.error("API Error:", error);
-        return "🌐 Boss, I'm having trouble connecting to my online brain.";
+        // এখানে ফিক্স করা হলো: এখন আসল টেকনিক্যাল এরর মেসেজটি স্ক্রিনে দেখাবে
+        return `🌐 কানেকশন এরর: ${error.message}`;
     }
 }
 
