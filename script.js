@@ -34,27 +34,52 @@ function addMessage(text, type = "ai") {
     if (typeof saveChat === "function") {
         saveChat();
     }
-
+    
+    return message; // পরবর্তীতে রিমুভ বা আপডেট করার জন্য রিটার্ন করা হলো
 }
 
 // ==========================
-// AI Reply
+// AI Reply (OpenAI API Integration)
 // ==========================
 
-    function getReply(text) {
+async function getReply(text) {
 
-    // Memory আগে চেক করবে
+    // ১. Memory আগে চেক করবে
     if (typeof memoryReply === "function") {
         const reply = memoryReply(text);
         if (reply) return reply;
     }
 
-    // তারপর Offline Commands
+    // ২. তারপর Offline Commands চেক করবে
     if (typeof getOfflineReply === "function") {
-        return getOfflineReply(text);
+        const reply = getOfflineReply(text);
+        // যদি অফলাইন কমান্ডে কোনো নির্দিষ্ট উত্তর থাকে (যা 'Sorry Boss' নয়), তবে সেটাই দেবে
+        if (reply && !reply.includes("Sorry Boss")) {
+            return reply;
+        }
     }
 
-    return "🙂 Sorry Boss, I don't know that yet.";
+    // ৩. অফলাইনে না মিললে Vercel-এর মাধ্যমে OpenAI API কল করবে
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        
+        if (data.reply) {
+            return data.reply;
+        } else {
+            return "Thinking error, Boss. Check Vercel logs.";
+        }
+    } catch (error) {
+        console.error("API Error:", error);
+        return "🌐 Boss, I'm having trouble connecting to my online brain.";
+    }
 }
 
 
@@ -62,7 +87,7 @@ function addMessage(text, type = "ai") {
 // Send Message
 // ==========================
 
-function sendMessage() {
+async function sendMessage() {
 
     const text = inputBox.value.trim();
 
@@ -72,18 +97,20 @@ function sendMessage() {
 
     inputBox.value = "";
 
-    const reply = getReply(text);
+    // "Kamine is thinking..." মেসেজ দেখানো
+    const thinkingMessage = addMessage("🤔 Kamine is thinking...", "ai");
 
-    setTimeout(() => {
+    // ব্যাক-এন্ড থেকে উত্তর আনা
+    const reply = await getReply(text);
 
-        addMessage(reply, "ai");
+    // থিংকিং মেসেজটি মুছে আসল উত্তর বসানো
+    thinkingMessage.remove();
 
-        if (typeof speak === "function") {
-            speak(reply);
-        }
+    addMessage(reply, "ai");
 
-    }, 300);
-
+    if (typeof speak === "function") {
+        speak(reply);
+    }
 }
 
 // ==========================
@@ -132,13 +159,13 @@ window.onload = function () {
 
     } else {
 
-        addMessage("👋 Welcome back, Boss.<br><br>I'm Kamine.<br>Offline Mode is Ready.");
+        addMessage("👋 Welcome back, Boss.<br><br>I'm Kamine.<br>Online Mode is Active via Vercel.");
 
     }
 
 };
 
-console.log("✅ Kamine Core Loaded");
+console.log("✅ Kamine Core Loaded with OpenAI API");
 
 window.addEventListener("load", function () {
 
