@@ -1,18 +1,13 @@
-const fetch = require('node-fetch'); // যদি এটি কাজ না করে, আমরা সাধারণ fetch-এ ব্যাক করব
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-module.exports = async (req, res) => {
-  // CORS হেডার সেট করা যাতে ব্রাউজার ব্লক না করে
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
@@ -23,7 +18,7 @@ module.exports = async (req, res) => {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: "OpenAI API Key is missing in Vercel settings." });
+    return res.status(200).json({ reply: "API Key সেটিংস-এ পাওয়া যায়নি Boss!" });
   }
 
   try {
@@ -47,9 +42,9 @@ module.exports = async (req, res) => {
     if (data.choices && data.choices[0]) {
       return res.status(200).json({ reply: data.choices[0].message.content });
     } else {
-      return res.status(500).json({ error: 'Invalid response from OpenAI', details: data });
+      return res.status(200).json({ reply: "OpenAI রেসপন্স এরর! কোটা বা ব্যালেন্স শেষ কি না চেক করুন।" });
     }
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(200).json({ reply: "সার্ভার কানেকশন এরর: " + error.message });
   }
-};
+}
