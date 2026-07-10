@@ -1,6 +1,5 @@
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-
 module.exports = async function handler(req, res) {
+  // CORS হেডার সেটিংস
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -18,10 +17,11 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    return res.status(200).json({ reply: "API Key সেটিংস-এ পাওয়া যায়নি Boss!" });
+    return res.status(500).json({ error: "OpenAI API Key is missing in Vercel settings." });
   }
 
   try {
+    // এখানে কোনো বাইরের প্যাকেজ ছাড়াই সরাসরি বিল্ট-ইন fetch ব্যবহার করা হয়েছে
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -42,9 +42,9 @@ module.exports = async function handler(req, res) {
     if (data.choices && data.choices[0]) {
       return res.status(200).json({ reply: data.choices[0].message.content });
     } else {
-      return res.status(200).json({ reply: "OpenAI রেসপন্স এরর! কোটা বা ব্যালেন্স শেষ কি না চেক করুন।" });
+      return res.status(500).json({ error: 'Invalid response from OpenAI', details: data });
     }
   } catch (error) {
-    return res.status(200).json({ reply: "সার্ভার কানেকশন এরর: " + error.message });
+    return res.status(500).json({ error: error.message });
   }
 }
