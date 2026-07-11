@@ -1,4 +1,4 @@
-// ১. স্প্ল্যাশ স্ক্রিন হ্যান্ডলিং
+// ১. স্প্ল্যাশ স্ক্রিন
 window.addEventListener('load', () => {
     setTimeout(() => {
         document.getElementById('splash-screen').style.display = 'none';
@@ -6,38 +6,41 @@ window.addEventListener('load', () => {
     }, 3000);
 });
 
-// ২. পিন ভেরিফিকেশন
+// ২. লক সিস্টেম
 function verifyPin() {
-    const pin = document.getElementById('pin-input').value;
-    if (pin === "1234") { // আপনার পিন
-        showApp();
-    } else {
-        alert("ভুল পিন!");
-    }
+    if (document.getElementById('pin-input').value === "1234") showApp();
+    else alert("ভুল পিন!");
 }
 
-// ৩. বায়োমেট্রিক ভেরিফিকেশন
 async function verifyBiometric() {
-    if (window.PublicKeyCredential) {
-        try {
-            // সিমুলেটেড বায়োমেট্রিক চেক
-            alert("বায়োমেট্রিক স্ক্যান করা হচ্ছে...");
-            showApp(); 
-        } catch (e) {
-            alert("ভেরিফিকেশন ব্যর্থ!");
-        }
-    } else {
-        alert("আপনার ডিভাইসে বায়োমেট্রিক সাপোর্ট নেই।");
-    }
+    alert("বায়োমেট্রিক স্ক্যান করা হচ্ছে...");
+    showApp();
 }
 
-// অ্যাপ ওপেন করা
 function showApp() {
     document.getElementById('owner-verification').style.display = 'none';
     document.getElementById('app').style.display = 'block';
 }
 
-// ৪. চ্যাট ফাংশন
+// ৩. ভয়েস ইনপুট ও আউটপুট
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'bn-BD';
+
+function startVoiceInput() { recognition.start(); }
+
+recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    document.getElementById('user-input').value = text;
+    sendMessage();
+};
+
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'bn-BD';
+    window.speechSynthesis.speak(speech);
+}
+
+// ৪. চ্যাট লজিক
 async function sendMessage() {
     const input = document.getElementById('user-input');
     const chatBox = document.getElementById('chat-box');
@@ -55,35 +58,9 @@ async function sendMessage() {
         });
         const data = await response.json();
         chatBox.innerHTML += `<div class="message ai-msg">${data.reply}</div>`;
+        speak(data.reply); // ভয়েস আউটপুট
     } catch (e) {
         chatBox.innerHTML += `<div class="message ai-msg">সার্ভার সংযোগ বিচ্ছিন্ন!</div>`;
     }
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// ১. Voice Input (কথা বলে মেসেজ)
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'bn-BD'; // বাংলা ভাষা সেট করা
-
-function startVoiceInput() {
-    recognition.start();
-}
-
-recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById('user-input').value = transcript;
-    
-    // "Hey Kamine" ডিটেকশন
-    if (transcript.toLowerCase().includes("hey kamine")) {
-        speak("জি বস, আমি শুনতে পাচ্ছি। বলুন আপনাকে কীভাবে সাহায্য করতে পারি?");
-    } else {
-        sendMessage(); // মেসেজ পাঠিয়ে দেওয়া
-    }
-};
-
-// ২. Voice Output (AI-এর উত্তর পড়া)
-function speak(text) {
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = 'bn-BD';
-    window.speechSynthesis.speak(speech);
 }
