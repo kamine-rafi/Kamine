@@ -10,9 +10,9 @@ const biometricBtn = document.getElementById("biometric-btn");
 const characterContainer = document.getElementById("character-container");
 const kamineAvatar = document.getElementById("kamine-avatar");
 
-// 🖼️ ক্যারেক্টারের ভিন্ন ভিন্ন অ্যানিমেশন স্টেট পরিবর্তন করার ফাংশন
+// 🖼️ ক্যারেক্টারের ভিন্ন ভিন্ন অ্যানিমেশন স্টেট পরিবর্তন করার ফাংশน
 function setCharacterState(state) {
-    if (!window.isOwnerMode) return;
+    if (!window.isOwnerMode || !kamineAvatar) return;
     
     // এখানে তোমার ক্যারেক্টারের GIF বা ইমেজের সঠিক পাথ বা লিংক বসাতে পারো
     if (state === "idle") {
@@ -43,7 +43,7 @@ function enableOwnerMode() {
     }
 }
 
-// ⌨️ পিন কোড দিয়ে ভেরিফিকেশন লজিক
+// ⌨️ পিন কোড দিয়ে ভেরিফিকেশন লজিক
 if (verifyPinBtn) {
     verifyPinBtn.addEventListener("click", () => {
         if (pinInput && pinInput.value === SECRET_PIN) {
@@ -84,9 +84,8 @@ function triggerOwnerLogin() {
     if (loginModal) loginModal.style.display = "flex";
 }
 
-// পেজ লোড হওয়ার সাথে সাথে ওনার মোডের পপআপ স্বয়ংক্রিয়ভাবে দেখাবে
-document.addEventListener("DOMContentLoaded", () => {
-    // যদি অলরেডি ওনার মোড অন না থাকে, তবে পপআপ দেখাবে
+// পেজ পুরোপুরি লোড হওয়ার পর ওনার মোডের পপআপ দেখাবে (কোনো মিসফায়ার হবে না)
+window.addEventListener("load", () => {
     if (!window.isOwnerMode) {
         triggerOwnerLogin();
     }
