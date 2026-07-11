@@ -1,8 +1,8 @@
-// 📦 Firebase v9+ CDN Modules (পাবলিক মোডের জন্য)
+// 📦 Firebase v9+ CDN Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// 🔑 তোমার ফায়ারবেস কনফিগারেশন (স্ক্রিনশট থেকে নেওয়া)
+// 🔑 তোমার ফায়ারবেস কনফিগারেশন
 const firebaseConfig = {
   apiKey: "AizaSyBPf2yQQ1ixTG7y3RBqE5aJj_HcQ3OaoC8",
   authDomain: "kanine-rafi.firebaseapp.com",
@@ -18,10 +18,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 🎯 DOM এলিমেন্টস (HTML এর সাথে কানেক্ট করার জন্য)
+// 🎯 DOM এলিমেন্টস
 const googleLoginBtn = document.getElementById("google-login-btn");
+const loginModal = document.getElementById("owner-login-modal");
 const publicChatArea = document.getElementById("public-chat-area");
-const loginWelcomeScreen = document.getElementById("login-welcome-screen");
 const publicSignoutBtn = document.getElementById("public-signout-btn");
 const userProfilePic = document.getElementById("user-profile-pic");
 const userNameDisplay = document.getElementById("user-name-display");
@@ -31,8 +31,7 @@ if (googleLoginBtn) {
     googleLoginBtn.addEventListener("click", async () => {
         try {
             const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            console.log("লগইন সফল হয়েছে Boss:", user.displayName);
+            console.log("লগইন সফল হয়েছে Boss:", result.user.displayName);
         } catch (error) {
             console.error("লগইন এরর:", error.message);
             alert("গুগল লগইন ব্যর্থ হয়েছে। আবার চেষ্টা করো বন্ধু!");
@@ -45,30 +44,33 @@ if (publicSignoutBtn) {
     publicSignoutBtn.addEventListener("click", async () => {
         try {
             await signOut(auth);
-            console.log("লগআউট সফল!");
-            location.reload(); // পেজ রিফ্রেশ করে লগইন স্ক্রিনে ফেরত নেওয়া
+            location.reload();
         } catch (error) {
             console.error("লগআউট এরর:", error);
         }
     });
 }
 
-// 🔄 ইউজারের লগইন স্টেট চেক করা (সবসময় নজর রাখবে কেউ লগইন আছে কিনা)
+// 🔄 ইউজারের লগইন স্টেট চেক করা
 onAuthStateChanged(auth, (user) => {
-    // ওনার মোড অন থাকলে পাবলিক মোড ইন্টারফেয়ার করবে না
+    // ওনার মোড অ্যাক্টিভ থাকলে পাবলিক মোড কিছু করবে না
     if (window.isOwnerMode) return;
 
     if (user) {
-        // ইউজার জিমেইল দিয়ে লগইন থাকলে চ্যাট স্ক্রিন দেখাবে
-        if (loginWelcomeScreen) loginWelcomeScreen.style.display = "none";
+        // ইউজার লগইন থাকলে লগইন স্ক্রিন লুকিয়ে চ্যাট বক্স দেখাবে
+        if (loginModal) loginModal.style.display = "none";
         if (publicChatArea) publicChatArea.style.display = "block";
         
-        // ইউজারের নাম ও ছবি প্রোফাইলে বসানো
-        if (userProfilePic && user.photoURL) userProfilePic.src = user.photoURL;
+        // প্রোফাইল আপডেট
+        if (userProfilePic && user.photoURL) {
+            userProfilePic.src = user.photoURL;
+            userProfilePic.style.display = "block";
+        }
         if (userNameDisplay) userNameDisplay.textContent = user.displayName;
+        if (publicSignoutBtn) publicSignoutBtn.style.display = "block";
     } else {
-        // ইউজার লগআউট থাকলে লগইন বাটনওয়ালা স্ক্রিন দেখাবে
-        if (loginWelcomeScreen) loginWelcomeScreen.style.display = "flex";
+        // লগআউট থাকলে লগইন স্ক্রিন দেখাবে
+        if (loginModal) loginModal.style.display = "flex";
         if (publicChatArea) publicChatArea.style.display = "none";
     }
 });
