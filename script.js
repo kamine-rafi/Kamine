@@ -1,15 +1,44 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const avatar = document.getElementById("avatar");
-    const loginModal = document.getElementById("owner-login-modal");
+import KamineMemory from './memory.js';
+import VoiceController from './voice.js';
+import OwnerController from './Owner.js';
+
+const avatar = document.getElementById("avatar");
+const input = document.getElementById("msg");
+const sendBtn = document.getElementById("sendBtn");
+const voiceBtn = document.getElementById("voiceBtn");
+const loginModal = document.getElementById("owner-login-modal");
+
+// পিন ভেরিফিকেশন
+document.getElementById("verify-pin-btn").addEventListener("click", () => {
+    const pin = document.getElementById("owner-pin").value;
+    OwnerController.verifyPin(pin, () => {
+        loginModal.style.display = "none";
+        document.getElementById("ai-avatar-container").style.display = "flex";
+    }, () => alert("ভুল পিন!"));
+});
+
+// মেসেজ সেন্ড
+sendBtn.addEventListener("click", () => {
+    if (!input.value) return;
+    KamineMemory.saveMessage("user", input.value);
+    KamineMemory.updateMood('talking');
     
-    // পিন ভেরিফিকেশন (তুমি চাইলে এটি পরে আরও বড় করতে পারো)
-    document.getElementById("verify-pin-btn").onclick = () => {
-        const pin = document.getElementById("owner-pin").value;
-        if(pin === "1234") { // তোমার পিন
-            loginModal.style.display = "none";
-            avatar.src = "idle.gif"; // এখানে তোমার ইমেজ ফাইল নাম দাও
-        } else {
-            alert("ভুল পিন!");
-        }
-    };
+    setTimeout(() => {
+        KamineMemory.updateMood('idle');
+        input.value = "";
+    }, 3000);
+});
+
+// ভয়েস লজিক
+voiceBtn.addEventListener("click", () => {
+    VoiceController.startListening((text) => {
+        input.value = text;
+        sendBtn.click();
+    });
+});
+
+// মুড চেঞ্জ হলে অবতার আপডেট
+window.addEventListener('moodChanged', (e) => {
+    const time = new Date().getTime();
+    avatar.src = `${e.detail.mood}.gif?t=${time}`;
 });
