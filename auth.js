@@ -1,11 +1,13 @@
- // auth.js
-export const checkAuth = (mode) => {
-    if (mode === 'owner') {
-        const pin = prompt("Enter Security PIN (Owner):");
-        return pin === "1234"; // তোমার পিন
-    } else {
-        // পাবলিক মোড: গুগল দিয়ে লগইন (Firebase Auth)
-        alert("Public Mode: Redirecting to Google Login...");
-        return true;
-    }
-};
+export async function checkAuth() {
+    // এখানে আপনার Firebase বা Auth লজিক বসবে
+    const isAuthenticated = localStorage.getItem('user');
+    if (!isAuthenticated) return null;
+    
+    // ধরি owner হলে localStorage-এ 'role' সেভ আছে
+    return { isOwner: localStorage.getItem('role') === 'boss' };
+}
+
+export function initPublicMode() {
+    console.log("Public mode activated: Login with Gmail");
+    // ইন্টারফেস রেন্ডার লজিক...
+}
