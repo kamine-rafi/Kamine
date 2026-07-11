@@ -5,7 +5,8 @@ const firebaseConfig = {
   projectId: "kanine-rafi",
   storageBucket: "kanine-rafi.firebasestorage.app",
   messagingSenderId: "219986114815",
-  appId: "1:219986114815:web:b1b549b6fdd991573434ca"
+  appId: "1:219986114815:web:b1b549b6fdd991573434ca",
+  measurementId: "G-GTFQ5YFLEF"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -20,16 +21,14 @@ window.addEventListener('load', () => {
     }, 2000);
 });
 
-// ২. পিন ও লগইন লজিক
+// ২. লগইন ও ভেরিফিকেশন
 function verifyPin() {
     if (document.getElementById('pin-input').value === "1234") showApp();
     else alert("ভুল পিন!");
 }
 
 function loginWithGoogle() {
-    auth.signInWithPopup(provider)
-        .then(() => showApp())
-        .catch(e => alert("লগইন এরর: " + e.message));
+    auth.signInWithPopup(provider).then(showApp).catch(e => alert(e.message));
 }
 
 function showApp() {
@@ -37,7 +36,25 @@ function showApp() {
     document.getElementById('app').style.display = 'block';
 }
 
-// ৩. ভয়েস ইনপুট
+// ৩. চ্যাট মেসেজ লজিক (নিশ্চিতভাবে মেসেজ দেখানোর জন্য)
+function sendMessage() {
+    const input = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+    const message = input.value.trim();
+    
+    if (!message) return;
+
+    // ইউজার মেসেজ রেন্ডার করা
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message user-msg';
+    msgDiv.textContent = message;
+    chatBox.appendChild(msgDiv);
+    
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ভয়েস লজিক
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = 'bn-BD';
 function startVoiceInput() { recognition.start(); }
@@ -45,14 +62,3 @@ recognition.onresult = (e) => {
     document.getElementById('user-input').value = e.results[0][0].transcript;
     sendMessage();
 };
-
-// ৪. চ্যাট মেসেজ
-function sendMessage() {
-    const input = document.getElementById('user-input');
-    const chatBox = document.getElementById('chat-box');
-    if (!input.value.trim()) return;
-
-    chatBox.innerHTML += `<div class="message user-msg">${input.value}</div>`;
-    input.value = '';
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
