@@ -60,3 +60,30 @@ async function sendMessage() {
     }
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// ১. Voice Input (কথা বলে মেসেজ)
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'bn-BD'; // বাংলা ভাষা সেট করা
+
+function startVoiceInput() {
+    recognition.start();
+}
+
+recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('user-input').value = transcript;
+    
+    // "Hey Kamine" ডিটেকশন
+    if (transcript.toLowerCase().includes("hey kamine")) {
+        speak("জি বস, আমি শুনতে পাচ্ছি। বলুন আপনাকে কীভাবে সাহায্য করতে পারি?");
+    } else {
+        sendMessage(); // মেসেজ পাঠিয়ে দেওয়া
+    }
+};
+
+// ২. Voice Output (AI-এর উত্তর পড়া)
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'bn-BD';
+    window.speechSynthesis.speak(speech);
+}
