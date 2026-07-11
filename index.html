@@ -14,31 +14,34 @@
 
 <div class="app">
 
-    <!-- Header -->
     <header class="header">
         <div class="logo">
             🤖 Kamine
+        </div>
+        <div id="public-user-info" style="display: flex; align-items: center; gap: 10px;">
+            <img id="user-profile-pic" src="" alt="" style="width: 30px; height: 30px; border-radius: 50%; display: none;">
+            <span id="user-name-display" style="font-size: 12px; color: #94a3b8;"></span>
+            <button id="public-signout-btn" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: none;">Log Out</button>
         </div>
         <div class="status">
             ● Offline
         </div>
     </header>
 
-    <!-- Chat -->
     <main id="chat" class="chat">
-        <!-- ওনার মোডের লাইভ ক্যারেক্টার স্ক্রিন (চ্যাটের ভেতরে টপে থাকবে) -->
         <div id="character-container" style="display: none; text-align: center; margin: 10px 0;">
             <img id="kamine-avatar" src="idle.gif" alt="Kamine" style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid #007bff; object-fit: cover;">
         </div>
 
-        <div class="message ai">
-            👋 Welcome back, <b>Boss</b>.<br><br>
-            I'm <b>Kamine</b>.<br>
-            Offline Mode is Ready.
+        <div id="public-chat-area">
+            <div class="message ai">
+                👋 Welcome back!<br><br>
+                I'm <b>Kamine AI</b>.<br>
+                গুগল লগইন সফল হয়েছে। নিচে মেসেজ লিখে চ্যাট শুরু করো বন্ধু!
+            </div>
         </div>
     </main>
 
-    <!-- Input -->
     <footer class="input-area">
         <button id="voiceBtn" class="icon-btn">
             🎤
@@ -56,23 +59,35 @@
 
 </div>
 
-<!-- ওনার পিন লগইন পপআপ মোডাল (ডিফল্টভাবে স্ক্রিনে ওপেন থাকবে) -->
-<div id="owner-login-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
-    <div style="background: #1e293b; padding: 25px; border-radius: 12px; text-align: center; color: white; width: 300px; border: 1px solid #334155;">
+<div id="owner-login-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; gap: 20px;">
+    
+    <div style="background: #1e293b; padding: 25px; border-radius: 12px; text-align: center; color: white; width: 300px; border: 1px solid #334155; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);">
         <h3>🔐 Owner Verification</h3>
         <p style="font-size: 13px; color: #94a3b8;">Enter 4-Digit PIN or Use Fingerprint</p>
         <input type="password" id="owner-pin" maxlength="4" placeholder="••••" style="width: 100%; text-align: center; font-size: 24px; padding: 10px; margin: 15px 0; border-radius: 8px; border: none; background: #0f172a; color: white; letter-spacing: 5px;">
         <button id="verify-pin-btn" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px;">Verify PIN</button>
         <button id="biometric-btn" style="width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🧬 Use Fingerprint/Face</button>
     </div>
+
+    <div style="color: #64748b; font-weight: bold; font-size: 14px;">— OR —</div>
+
+    <div id="login-welcome-screen" style="background: #1e293b; padding: 20px; border-radius: 12px; text-align: center; color: white; width: 300px; border: 1px solid #334155; display: flex; flex-direction: column; align-items: center;">
+        <h4 style="margin: 0 0 5px 0;">🌐 Public Mode</h4>
+        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Login with Gmail to chat with Kamine AI</p>
+        <button id="google-login-btn" style="width: 100%; padding: 12px; background: white; color: #1e293b; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 18px;">
+            Sign in with Google
+        </button>
+    </div>
+
 </div> 
 
-<!-- JavaScript ফাইলসমূহ (HTML তৈরি হওয়ার পর স্ক্রিপ্টগুলো রান করবে) -->
 <script src="commands.js"></script>
 <script src="owner.js"></script>
 <script src="memory.js"></script>
 <script src="voice.js"></script>
 <script src="script.js"></script>
+<script type="module" src="auth.js"></script>
 
 </body>
 </html>
