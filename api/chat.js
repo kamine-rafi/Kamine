@@ -1,7 +1,8 @@
 module.exports = async function handler(req, res) {
+  // CORS হেডার্স সেটআপ
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
@@ -13,14 +14,18 @@ module.exports = async function handler(req, res) {
   }
 
   const { message } = req.body;
-  const apiKey = process.env.OPENAI_API_KEY; // Vercel-এ আগের নামটাই থাকবে, শুধু ভেতরে Groq Key বসবে
+
+  if (!message) {
+    return res.status(400).json({ error: 'Message is required' });
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY; 
 
   if (!apiKey) {
     return res.status(500).json({ error: "API Key is missing in Vercel settings." });
   }
 
   try {
-    // এখানে আমরা Groq-এর অতি দ্রুতগতির এবং ফ্রি সার্ভার ব্যবহার করছি
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -28,11 +33,15 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile', // Groq-এর অন্যতম সেরা এবং দ্রুতগতির মডেল
+        model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: 'You are Kamine, a helpful AI assistant. You address the user as Boss.' },
+          { 
+            role: 'system', 
+            content: 'You are Kamine, a personal AI assistant. You must address the user as "Boss" (বা বস). You are fully bilingual and can communicate fluently in both Bengali and English. Keep your responses helpful, polite, and professional.' 
+          },
           { role: 'user', content: message }
-        ]
+        ],
+        temperature: 0.7
       })
     });
 
