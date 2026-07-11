@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamine AI Assistant</title>
+    <title>Kamine AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- ৩ সেকেন্ডের স্প্ল্যাশ স্ক্রিন -->
     <div id="splash-screen">
-        <img src="logo.png" alt="Kamine Logo">
+        <img src="logo.png" alt="Kamine Logo" class="logo">
     </div>
 
-    <div id="app" style="display:none;">
+    <!-- মূল চ্যাট ইন্টারফেস -->
+    <div id="app" class="hidden">
         <div id="chat-container">
             <div id="chat-box"></div>
             <div class="input-area">
-                <input type="text" id="user-input" placeholder="বসকে কিছু বলুন...">
-                <button onclick="sendMessage()">পাঠান</button>
+                <input type="text" id="user-input" placeholder="Message Kamine...">
+                <button onclick="sendMessage()">➤</button>
             </div>
         </div>
     </div>
