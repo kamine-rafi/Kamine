@@ -1,100 +1,44 @@
-/* ==========================================
-   Kamine AI v2.0
-   Core Controller - Optimized for Animations
-   Created by KM Rafi Chowdhury
-========================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    const avatar = document.getElementById("avatar");
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    const sendBtn = document.getElementById("sendBtn");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const input = document.getElementById("msg");
 
-"use strict";
+    // অ্যানিমেশন ফাংশন
+    window.updateAvatar = (mode) => {
+        if (!avatar) return;
+        const time = new Date().getTime();
+        if (mode === "talking") avatar.src = `talking.gif?t=${time}`;
+        else if (mode === "shy") avatar.src = `shy.gif?t=${time}`;
+        else avatar.src = `idle.gif?t=${time}`;
+    };
 
-// DOM Elements
-const chatBox = document.getElementById("chat");
-const inputBox = document.getElementById("msg");
-const sendBtn = document.getElementById("sendBtn");
-const voiceBtn = document.getElementById("voiceBtn");
-const avatar = document.getElementById("avatar"); // তোমার এআই ক্যারেক্টার ইমেজ আইডি
+    // ভয়েস এপিআই লজিক
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'bn-BD, en-US';
 
-// এআই ক্যারেক্টার ইমেজ আপডেট ফাংশন
-function updateAvatar(mode) {
-    if (!avatar) return;
-    if (mode === "talking") avatar.src = "talking.gif?t=" + new Date().getTime();
-    else if (mode === "shy") avatar.src = "shy.gif?t=" + new Date().getTime();
-    else avatar.src = "idle.gif?t=" + new Date().getTime();
-}
+    voiceBtn.addEventListener("click", () => {
+        recognition.start();
+        updateAvatar("talking");
+    });
 
-// Add Message
-function addMessage(text, type = "ai") {
-    const message = document.createElement("div");
-    message.className = "message " + type;
-    message.innerHTML = text;
-    chatBox.appendChild(message);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    if (typeof saveChat === "function") saveChat();
-    return message;
-}
+    recognition.onresult = (event) => {
+        input.value = event.results[0][0].transcript;
+        updateAvatar("idle");
+    };
 
-// AI Reply
-async function getReply(text) {
-    updateAvatar("talking"); // কথা বলার সময় টকিং জিআইএফ
-    
-    if (typeof memoryReply === "function") {
-        const reply = memoryReply(text);
-        if (reply) { updateAvatar("idle"); return reply; }
-    }
+    // মেসেজ সেন্ড লজিক
+    sendBtn.addEventListener("click", () => {
+        if (!input.value) return;
+        updateAvatar("talking");
+        setTimeout(() => updateAvatar("idle"), 3000);
+        input.value = "";
+    });
 
-    if (typeof getOfflineReply === "function") {
-        const reply = getOfflineReply(text);
-        if (reply && !reply.includes("Sorry Boss")) { updateAvatar("idle"); return reply; }
-    }
-
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-        });
-        const data = await response.json();
-        updateAvatar("idle"); // রেসপন্স এলে আবার আইডল মোডে আসবে
-        return data.reply || "Thinking error, Boss.";
-    } catch (error) {
-        updateAvatar("shy"); // এরর হলে লজ্জা পাওয়ার জিআইএফ
-        return `🌐 কানেকশন এরর: ${error.message}`;
-    }
-}
-
-// Send Message
-async function sendMessage() {
-    const text = inputBox.value.trim();
-    if (!text) return;
-    addMessage(text, "user");
-    inputBox.value = "";
-    const thinkingMessage = addMessage("🤔 Kamine is thinking...", "ai");
-    const reply = await getReply(text);
-    thinkingMessage.remove();
-    addMessage(reply, "ai");
-    if (typeof speak === "function") speak(reply);
-}
-
-// Events
-sendBtn.addEventListener("click", sendMessage);
-inputBox.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
-
-// Splash Screen Logic (৩ সেকেন্ড লোগো দেখাবে)
-window.addEventListener("load", function () {
-    setTimeout(function () {
-        const splash = document.getElementById("splash");
-        if (splash) {
-            splash.classList.add("splash-hide");
-            setTimeout(() => { splash.remove(); updateAvatar("idle"); }, 800);
-        }
+    // স্প্ল্যাশ স্ক্রিন রিমুভ
+    setTimeout(() => {
+        document.getElementById("splash").style.display = "none";
+        // লগইন করার পর অবতার দেখাবে (auth.js থেকে কল করতে পারো)
     }, 3000);
 });
-
-console.log("✅ Kamine Core Loaded with Animation Support");
-
-// স্প্ল্যাশ স্ক্রিন যাওয়ার পর জিআইএফ দেখানোর জন্য
-setTimeout(() => {
-    const avatarContainer = document.getElementById("ai-avatar-container");
-    if (avatarContainer) {
-        avatarContainer.style.display = "block"; // এটিই জিআইএফ দেখাবে
-    }
-}, 3100); // ৩ সেকেন্ডের চেয়ে সামান্য বেশি সময়
