@@ -1,101 +1,93 @@
-/* ==========================================
-   Kamine AI v2.0
-   Owner System
-========================================== */
+// ওনার মোড কনফিগারেশন ও গ্লোবাল স্টেট
+window.isOwnerMode = false;
+const SECRET_PIN = "1234"; // 🛠️ তোমার পার্সোনাল ৪ ডিজিটের পিন (ইচ্ছা হলে বদলে নিতে পারো)
 
-"use strict";
+// DOM এলিমেন্টসমূহ সিলেক্ট করা
+const loginModal = document.getElementById("owner-login-modal");
+const pinInput = document.getElementById("owner-pin");
+const verifyPinBtn = document.getElementById("verify-pin-btn");
+const biometricBtn = document.getElementById("biometric-btn");
+const characterContainer = document.getElementById("character-container");
+const kamineAvatar = document.getElementById("kamine-avatar");
 
-// ==========================
-// Owner Settings
-// ==========================
-
-let ownerMode = false;
-
-let ownerPin = localStorage.getItem("kamine_owner_pin") || "1234";
-
-// ==========================
-// Owner Commands
-// ==========================
-
-function ownerCommand(text){
-
-    const msg = text.trim().toLowerCase();
-
-    // Login
-    if(msg === "owner login"){
-
-        const pin = prompt("🔐 Enter Owner PIN");
-
-        if(pin === ownerPin){
-
-            ownerMode = true;
-
-            return "✅ Welcome back Boss. Owner Mode Enabled.";
-
-        }
-
-        return "❌ Wrong PIN.";
-
+// 🖼️ ক্যারেক্টারের ভিন্ন ভিন্ন অ্যানিমেশন স্টেট পরিবর্তন করার ফাংশন
+function setCharacterState(state) {
+    if (!window.isOwnerMode) return;
+    
+    // এখানে তোমার ক্যারেক্টারের GIF বা ইমেজের সঠিক পাথ বা লিংক বসাতে পারো
+    if (state === "idle") {
+        kamineAvatar.src = "idle.gif"; 
+    } else if (state === "thinking") {
+        kamineAvatar.src = "thinking.gif"; 
+    } else if (state === "speaking") {
+        kamineAvatar.src = "speaking.gif";
     }
-
-    // Logout
-    if(msg === "owner logout"){
-
-        ownerMode = false;
-
-        return "👋 Owner Mode Disabled.";
-
-    }
-
-    // Status
-    if(msg === "owner mode"){
-
-        return ownerMode
-            ? "🟢 Owner Mode Enabled."
-            : "🔴 Owner Mode Disabled.";
-
-    }
-
-    // Change PIN
-    if(msg.startsWith("set pin ")){
-
-        if(!ownerMode){
-
-            return "🔒 Please login first.";
-
-        }
-
-        const newPin = msg.replace("set pin","").trim();
-
-        if(newPin.length < 4){
-
-            return "❌ PIN must be at least 4 digits.";
-
-        }
-
-        ownerPin = newPin;
-
-        localStorage.setItem("kamine_owner_pin", ownerPin);
-
-        return "✅ Owner PIN Updated.";
-
-    }
-
-    // Boss
-    if(msg === "who is your boss"){
-
-        return "👤 My Boss is KM Rafi Chowdhury.";
-
-    }
-
-    if(msg === "am i your boss"){
-
-        return "❤️ Yes Boss. You are my creator.";
-
-    }
-
-    return null;
-
 }
 
-console.log("✅ Owner System Loaded");
+// 🔐 ওনার মোড সফলভাবে অ্যাক্টিভেট হলে যা ঘটবে
+function enableOwnerMode() {
+    window.isOwnerMode = true;
+    if (loginModal) loginModal.style.display = "none";
+    if (characterContainer) characterContainer.style.display = "block";
+    
+    setCharacterState("idle");
+    
+    // চ্যাট বক্সে ওনারকে স্বাগত জানানো
+    const chatMain = document.getElementById("chat");
+    if (chatMain) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message ai";
+        msgDiv.innerHTML = "✅ Welcome back Boss. Owner Mode Enabled.";
+        chatMain.appendChild(msgDiv);
+        chatMain.scrollTop = chatMain.scrollHeight;
+    }
+}
+
+// ⌨️ পিন কোড দিয়ে ভেরিফিকেশন লজিক
+if (verifyPinBtn) {
+    verifyPinBtn.addEventListener("click", () => {
+        if (pinInput && pinInput.value === SECRET_PIN) {
+            enableOwnerMode();
+        } else {
+            alert("❌ Wrong PIN, Boss!");
+            if (pinInput) pinInput.value = "";
+        }
+    });
+}
+
+// 🧬 বিল্ট-ইন ফেস বা ফিঙ্গারপ্রিন্ট (Biometric) লজিক
+if (biometricBtn) {
+    biometricBtn.addEventListener("click", async () => {
+        if (window.PublicKeyCredential) {
+            try {
+                const credential = await navigator.credentials.get({
+                    publicKey: {
+                        challenge: new Uint8Array([1, 2, 3, 4]),
+                        userVerification: "required"
+                    }
+                });
+                if (credential) {
+                    enableOwnerMode();
+                }
+            } catch (err) {
+                console.log("Biometric bypassed, falling back to PIN.");
+                if (pinInput) pinInput.focus();
+            }
+        } else {
+            alert("Biometric lock is not supported on this browser. Please use PIN.");
+        }
+    });
+}
+
+// 🛠️ ওনার লগইন পপআপ স্ক্রিন চালু করার ফাংশন
+function triggerOwnerLogin() {
+    if (loginModal) loginModal.style.display = "flex";
+}
+
+// পেজ লোড হওয়ার সাথে সাথে ওনার মোডের পপআপ স্বয়ংক্রিয়ভাবে দেখাবে
+document.addEventListener("DOMContentLoaded", () => {
+    // যদি অলরেডি ওনার মোড অন না থাকে, তবে পপআপ দেখাবে
+    if (!window.isOwnerMode) {
+        triggerOwnerLogin();
+    }
+});
