@@ -1,38 +1,40 @@
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.getElementById('splash-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-    }, 3000);
-});
-
-async function sendMessage() {
-    const input = document.getElementById('user-input');
-    const chatBox = document.getElementById('chat-box');
-    const message = input.value.trim();
-    if (!message) return;
-
-    chatBox.innerHTML += `<div class="message user-msg">${message}</div>`;
-    input.value = '';
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    try {
-        const response = await fetch('/api/chat', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message })
-        });
-        const data = await response.json();
-        
-        if (data.reply) {
-            chatBox.innerHTML += `<div class="message ai-msg">${data.reply}</div>`;
-        } else {
-            chatBox.innerHTML += `<div class="message ai-msg" style="color: #ff6b6b;">সার্ভার এরর: ${data.error || 'Invalid response'}</div>`;
-        }
-    } catch (e) {
-        chatBox.innerHTML += `<div class="message ai-msg" style="color: #ff6b6b;">সার্ভার সংযোগ বিচ্ছিন্ন!</div>`;
+// পিন ভেরিফিকেশন
+function verifyPin() {
+    const pin = document.getElementById('pin-input').value;
+    if (pin === "1234") { // আপনার পিন
+        showApp();
+    } else {
+        alert("ভুল পিন!");
     }
-    chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// এন্টার কি দিয়ে পাঠানো
-document.getElementById('user-input').addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+// বায়োমেট্রিক ভেরিফিকেশন (ফিঙ্গারপ্রিন্ট/ফেস লক)
+async function verifyBiometric() {
+    try {
+        // ব্রাউজারের বায়োমেট্রিক সাপোর্ট চেক করা
+        if (window.PublicKeyCredential) {
+            const challenge = new Uint8Array([0x01, 0x02, 0x03]); // সিকিউরিটি চ্যালেঞ্জ
+            const credential = await navigator.credentials.get({
+                publicKey: {
+                    challenge: challenge,
+                    timeout: 60000,
+                    userVerification: "required"
+                }
+            });
+
+            if (credential) {
+                showApp(); // সফল হলে অ্যাপ ওপেন হবে
+            }
+        } else {
+            alert("আপনার ডিভাইসে বায়োমেট্রিক সুবিধা নেই।");
+        }
+    } catch (err) {
+        console.error("বায়োমেট্রিক এরর:", err);
+        alert("বায়োমেট্রিক ভেরিফিকেশন ব্যর্থ হয়েছে।");
+    }
+}
+
+function showApp() {
+    document.getElementById('owner-verification').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+}
