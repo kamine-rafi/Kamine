@@ -1,44 +1,23 @@
-import KamineMemory from './memory.js';
-import VoiceController from './voice.js';
-import OwnerController from './Owner.js';
+import { loginAsOwner, loginAsPublic } from './auth.js';
+import { startVoiceRecognition } from './voice.js';
 
-const avatar = document.getElementById("avatar");
-const input = document.getElementById("msg");
-const sendBtn = document.getElementById("sendBtn");
-const voiceBtn = document.getElementById("voiceBtn");
-const loginModal = document.getElementById("owner-login-modal");
+const chatInterface = document.getElementById("chat-interface");
 
-// পিন ভেরিফিকেশন
-document.getElementById("verify-pin-btn").addEventListener("click", () => {
-    const pin = document.getElementById("owner-pin").value;
-    OwnerController.verifyPin(pin, () => {
-        loginModal.style.display = "none";
-        document.getElementById("ai-avatar-container").style.display = "flex";
-    }, () => alert("ভুল পিন!"));
+document.getElementById("owner-btn").addEventListener("click", () => {
+    // এখানে পিন/ফিংগারপ্রিন্ট ভেরিফিকেশন লজিক বসাও
+    const pin = prompt("Enter Security PIN:");
+    if(pin === "1234") {
+        document.getElementById("auth-container").style.display = "none";
+        chatInterface.style.display = "block";
+    }
 });
 
-// মেসেজ সেন্ড
-sendBtn.addEventListener("click", () => {
-    if (!input.value) return;
-    KamineMemory.saveMessage("user", input.value);
-    KamineMemory.updateMood('talking');
-    
-    setTimeout(() => {
-        KamineMemory.updateMood('idle');
-        input.value = "";
-    }, 3000);
-});
-
-// ভয়েস লজিক
-voiceBtn.addEventListener("click", () => {
-    VoiceController.startListening((text) => {
-        input.value = text;
-        sendBtn.click();
+// ভয়েস কমান্ড লজিক
+document.getElementById("voiceBtn").addEventListener("click", () => {
+    startVoiceRecognition((text) => {
+        if(text.toLowerCase().includes("hey kamine")) {
+            console.log("Listening to Boss...");
+            // কথা বলা এবং রেসপন্স লজিক
+        }
     });
-});
-
-// মুড চেঞ্জ হলে অবতার আপডেট
-window.addEventListener('moodChanged', (e) => {
-    const time = new Date().getTime();
-    avatar.src = `${e.detail.mood}.gif?t=${time}`;
 });
