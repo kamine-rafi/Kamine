@@ -13,29 +13,21 @@
 </div>
 
 <div class="app">
-    <!-- Header -->
     <header class="header">
         <div class="logo">🤖 Kamine</div>
-        <div id="public-user-info" style="display: flex; align-items: center; gap: 10px;">
+        <div id="user-info-area" style="display: flex; align-items: center; gap: 10px;">
             <img id="user-profile-pic" src="" alt="" style="width: 30px; height: 30px; border-radius: 50%; display: none;">
-            <span id="user-name-display" style="font-size: 12px; color: #94a3b8;"></span>
-            <button id="public-signout-btn" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: none;">Log Out</button>
+            <span id="user-name-display" style="font-size: 13px; color: #94a3b8; font-weight: bold;"></span>
+            <button id="signout-btn" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: none;">Logout</button>
         </div>
         <div class="status">● Connected</div>
     </header>
 
-    <!-- Chat Area -->
     <main id="chat" class="chat">
-        <div id="public-chat-area">
-            <div class="message ai">
-                👋 Welcome back!<br><br>
-                I'm <b>Kamine AI</b>.<br>
-                গুগল লগইন সফল হয়েছে। নিচে মেসেজ লিখে চ্যাট শুরু করো বন্ধু!
+        <div id="chat-area">
             </div>
-        </div>
     </main>
 
-    <!-- Input Area -->
     <footer class="input-area">
         <button id="voiceBtn" class="icon-btn">🎤</button>
         <input id="msg" type="text" placeholder="Message Kamine..." autocomplete="off">
@@ -43,10 +35,8 @@
     </footer>
 </div>
 
-<!-- 🔐 লক স্ক্রিন মোডাল -->
-<div id="owner-login-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; gap: 20px;">
+<div id="owner-login-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.96); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; gap: 20px;">
     
-    <!-- ওনার লগইন -->
     <div style="background: #1e293b; padding: 25px; border-radius: 12px; text-align: center; color: white; width: 300px; border: 1px solid #334155; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);">
         <h3>🔐 Owner Verification</h3>
         <p style="font-size: 13px; color: #94a3b8;">Enter 4-Digit PIN to login as Owner</p>
@@ -56,7 +46,6 @@
 
     <div style="color: #64748b; font-weight: bold; font-size: 14px;">— OR —</div>
 
-    <!-- পাবলিক গুগল লগইন -->
     <div id="login-welcome-screen" style="background: #1e293b; padding: 20px; border-radius: 12px; text-align: center; color: white; width: 300px; border: 1px solid #334155;">
         <h4 style="margin: 0 0 5px 0;">🌐 Public Mode</h4>
         <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Login with Gmail to chat with Kamine AI</p>
@@ -67,7 +56,6 @@
     </div>
 </div> 
 
-<!-- মেইন কোড স্ক্রিপ্ট -->
 <script type="module" src="auth.js"></script>
 
 </body>
