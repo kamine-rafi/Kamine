@@ -3,17 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kamine AI</title>
+    <title>Kamine AI - Secure Access</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- ৩ সেকেন্ডের স্প্ল্যাশ স্ক্রিন -->
     <div id="splash-screen">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="logo.png" alt="Kamine Logo" class="logo">
     </div>
 
-    <!-- মূল অ্যাপ্লিকেশন -->
+    <div id="owner-verification" style="display:none;">
+        <div class="lock-box">
+            <h3>🔒 Owner Verification</h3>
+            <input type="password" id="pin-input" placeholder="Enter 4-Digit PIN" maxlength="4">
+            <button onclick="verifyPin()" class="btn-primary">Verify PIN</button>
+            <p>অথবা</p>
+            <button onclick="verifyBiometric()" class="btn-secondary">Fingerprint / Face Lock</button>
+        </div>
+        
+        <div class="public-mode">
+            <p>🌎 Public Mode</p>
+            <button onclick="loginWithGoogle()" class="btn-google">Sign in with Google</button>
+        </div>
+    </div>
+
     <div id="app" style="display:none;">
         <div id="chat-container">
             <div id="chat-box"></div>
