@@ -55,22 +55,38 @@ if (verifyPinBtn) {
     });
 }
 
-// 🧬 বিল্ট-ইন ফেস বা ফিঙ্গারপ্রিন্ট (Biometric) লজিক
+// 🧬 বিল্ট-ইন ফেস, ফিঙ্গারপ্রিন্ট বা ডিভাইস লক (Smart Biometric Fallback) লজিক
 if (biometricBtn) {
     biometricBtn.addEventListener("click", async () => {
+        // আধুনিক ব্রাউজারের ক্রেডেনশিয়াল ম্যানেজার চেক
         if (window.PublicKeyCredential) {
             try {
-                const credential = await navigator.credentials.get({
+                // এটি ফোনের আসল ফিঙ্গারপ্রিন্ট/ফেস/স্ক্রিনলক পপআপকে কল করার আধুনিক এবং সহজ উপায়
+                const options = {
                     publicKey: {
-                        challenge: new Uint8Array([1, 2, 3, 4]),
-                        userVerification: "required"
+                        challenge: crypto.getRandomValues(new Uint8Array(32)),
+                        rp: { name: "Kamine AI" },
+                        user: {
+                            id: crypto.getRandomValues(new Uint8Array(16)),
+                            name: "boss",
+                            displayName: "Rafi Boss"
+                        },
+                        pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                        timeout: 60000,
+                        authenticatorSelection: {
+                            authenticatorAttachment: "platform", // এর মানে ফোন/ল্যাপটপের নিজস্ব বায়োমেট্রিক
+                            userVerification: "required"
+                        }
                     }
-                });
+                };
+
+                const credential = await navigator.credentials.create(options);
                 if (credential) {
                     enableOwnerMode();
                 }
             } catch (err) {
-                console.log("Biometric bypassed, falling back to PIN.");
+                console.error("Biometric setup/verification skipped:", err);
+                alert("ডিভাইস লক বা বায়োমেট্রিক ভেরিফিকেশন সফল হয়নি Boss। অনুগ্রহ করে ৪ ডিজিটের PIN ব্যবহার করুন।");
                 if (pinInput) pinInput.focus();
             }
         } else {
