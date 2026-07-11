@@ -1,19 +1,27 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamine AI Assistant</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- স্প্ল্যাশ স্ক্রিন -->
+
     <div id="splash-screen">
-        <img src="logo.png" alt="Logo">
+        <img src="logo.png" alt="Kamine Logo">
     </div>
 
-    <!-- মূল কন্টেন্ট -->
     <div id="app" style="display:none;">
-        <div id="chat-container"></div>
-        <div id="voice-controls"></div>
+        <div id="chat-container">
+            <div id="chat-box"></div>
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="বসকে কিছু বলুন...">
+                <button onclick="sendMessage()">পাঠান</button>
+            </div>
+        </div>
     </div>
-    <script src="script.js" type="module"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
