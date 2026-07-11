@@ -1,196 +1,92 @@
 /* ==========================================
    Kamine AI v2.0
-   Core Controller
+   Core Controller - Optimized for Animations
    Created by KM Rafi Chowdhury
 ========================================== */
 
 "use strict";
 
-// ==========================
 // DOM Elements
-// ==========================
-
 const chatBox = document.getElementById("chat");
 const inputBox = document.getElementById("msg");
 const sendBtn = document.getElementById("sendBtn");
 const voiceBtn = document.getElementById("voiceBtn");
+const avatar = document.getElementById("avatar"); // তোমার এআই ক্যারেক্টার ইমেজ আইডি
 
-// ==========================
-// Add Message
-// ==========================
-
-function addMessage(text, type = "ai") {
-
-    const message = document.createElement("div");
-
-    message.className = "message " + type;
-
-    message.innerHTML = text;
-
-    chatBox.appendChild(message);
-
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    if (typeof saveChat === "function") {
-        saveChat();
-    }
-    
-    return message; // পরবর্তীতে রিমুভ বা আপডেট করার জন্য রিটার্ন করা হলো
+// এআই ক্যারেক্টার ইমেজ আপডেট ফাংশন
+function updateAvatar(mode) {
+    if (!avatar) return;
+    if (mode === "talking") avatar.src = "talking.gif?t=" + new Date().getTime();
+    else if (mode === "shy") avatar.src = "shy.gif?t=" + new Date().getTime();
+    else avatar.src = "idle.gif?t=" + new Date().getTime();
 }
 
-// ==========================
-// AI Reply (OpenAI API Integration)
-// ==========================
+// Add Message
+function addMessage(text, type = "ai") {
+    const message = document.createElement("div");
+    message.className = "message " + type;
+    message.innerHTML = text;
+    chatBox.appendChild(message);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    if (typeof saveChat === "function") saveChat();
+    return message;
+}
 
+// AI Reply
 async function getReply(text) {
-
-    // ১. Memory আগে চেক করবে
+    updateAvatar("talking"); // কথা বলার সময় টকিং জিআইএফ
+    
     if (typeof memoryReply === "function") {
         const reply = memoryReply(text);
-        if (reply) return reply;
+        if (reply) { updateAvatar("idle"); return reply; }
     }
 
-    // ২. তারপর Offline Commands চেক করবে
     if (typeof getOfflineReply === "function") {
         const reply = getOfflineReply(text);
-        // যদি অফলাইন কমান্ডে কোনো নির্দিষ্ট উত্তর থাকে (যা 'Sorry Boss' নয়), তবে সেটাই দেবে
-        if (reply && !reply.includes("Sorry Boss")) {
-            return reply;
-        }
+        if (reply && !reply.includes("Sorry Boss")) { updateAvatar("idle"); return reply; }
     }
 
-    // ৩. অফলাইনে না মিললে Vercel-এর মাধ্যমে OpenAI API কল করবে
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
         });
-
         const data = await response.json();
-        
-        // যদি ব্যাক-এন্ড কোনো এরর অবজেক্ট পাঠায়
-        if (data.error) {
-            return `❌ সার্ভার এরর: ${data.error}`;
-        }
-        
-        if (data.reply) {
-            return data.reply;
-        } else {
-            return "Thinking error, Boss. OpenAI থেকে খালি রেসপন্স এসেছে।";
-        }
+        updateAvatar("idle"); // রেসপন্স এলে আবার আইডল মোডে আসবে
+        return data.reply || "Thinking error, Boss.";
     } catch (error) {
-        console.error("API Error:", error);
-        // এখানে ফিক্স করা হলো: এখন আসল টেকনিক্যাল এরর মেসেজটি স্ক্রিনে দেখাবে
+        updateAvatar("shy"); // এরর হলে লজ্জা পাওয়ার জিআইএফ
         return `🌐 কানেকশন এরর: ${error.message}`;
     }
 }
 
-
-// ==========================
 // Send Message
-// ==========================
-
 async function sendMessage() {
-
     const text = inputBox.value.trim();
-
     if (!text) return;
-
     addMessage(text, "user");
-
     inputBox.value = "";
-
-    // "Kamine is thinking..." মেসেজ দেখানো
     const thinkingMessage = addMessage("🤔 Kamine is thinking...", "ai");
-
-    // ব্যাক-এন্ড থেকে উত্তর আনা
     const reply = await getReply(text);
-
-    // থিংকিং মেসেজটি মুছে আসল উত্তর বসানো
     thinkingMessage.remove();
-
     addMessage(reply, "ai");
-
-    if (typeof speak === "function") {
-        speak(reply);
-    }
+    if (typeof speak === "function") speak(reply);
 }
 
-// ==========================
 // Events
-// ==========================
-
 sendBtn.addEventListener("click", sendMessage);
+inputBox.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
 
-inputBox.addEventListener("keydown", function (e) {
-
-    if (e.key === "Enter") {
-
-        sendMessage();
-
-    }
-
-});
-
-// ==========================
-// Voice Button
-// ==========================
-
-if (voiceBtn) {
-
-    voiceBtn.addEventListener("click", function () {
-
-        if (typeof startVoice === "function") {
-
-            startVoice();
-
-        }
-
-    });
-
-}
-
-// ==========================
-// Welcome
-// ==========================
-
-window.onload = function () {
-
-    if (typeof loadChat === "function") {
-
-        loadChat();
-
-    } else {
-
-        addMessage("👋 Welcome back, Boss.<br><br>I'm Kamine.<br>Online Mode is Active via Vercel.");
-
-    }
-
-};
-
-console.log("✅ Kamine Core Loaded with OpenAI API");
-
+// Splash Screen Logic (৩ সেকেন্ড লোগো দেখাবে)
 window.addEventListener("load", function () {
-
     setTimeout(function () {
-
         const splash = document.getElementById("splash");
-
         if (splash) {
-
             splash.classList.add("splash-hide");
-
-            setTimeout(function () {
-
-                splash.remove();
-
-            }, 800);
-
+            setTimeout(() => { splash.remove(); updateAvatar("idle"); }, 800);
         }
-
     }, 3000);
-
 });
+
+console.log("✅ Kamine Core Loaded with Animation Support");
