@@ -90,3 +90,11 @@ window.addEventListener("load", function () {
 });
 
 console.log("✅ Kamine Core Loaded with Animation Support");
+
+// স্প্ল্যাশ স্ক্রিন যাওয়ার পর জিআইএফ দেখানোর জন্য
+setTimeout(() => {
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    if (avatarContainer) {
+        avatarContainer.style.display = "block"; // এটিই জিআইএফ দেখাবে
+    }
+}, 3100); // ৩ সেকেন্ডের চেয়ে সামান্য বেশি সময়
