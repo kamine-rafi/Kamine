@@ -1,44 +1,31 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const avatar = document.getElementById("avatar");
-    const avatarContainer = document.getElementById("ai-avatar-container");
-    const sendBtn = document.getElementById("sendBtn");
-    const voiceBtn = document.getElementById("voiceBtn");
-    const input = document.getElementById("msg");
+const input = document.getElementById("msg");
+const sendBtn = document.getElementById("sendBtn");
+const voiceBtn = document.getElementById("voiceBtn");
+const avatar = document.getElementById("avatar");
 
-    // অ্যানিমেশন ফাংশন
-    window.updateAvatar = (mode) => {
-        if (!avatar) return;
-        const time = new Date().getTime();
-        if (mode === "talking") avatar.src = `talking.gif?t=${time}`;
-        else if (mode === "shy") avatar.src = `shy.gif?t=${time}`;
-        else avatar.src = `idle.gif?t=${time}`;
-    };
+// মেসেজ পাঠানোর ফাংশন
+function sendMessage() {
+    const text = input.value;
+    if (!text) return;
+    
+    avatar.src = "talking.gif"; // কথা বলার অ্যানিমেশন
+    console.log("Sending to AI:", text);
+    
+    // এখানে তোমার API কল বসাবে
+    input.value = "";
+    setTimeout(() => avatar.src = "idle.gif", 3000); // ৩ সেকেন্ড পর আবার আইডিয়াল
+}
 
-    // ভয়েস এপিআই লজিক
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'bn-BD, en-US';
+sendBtn.addEventListener("click", sendMessage);
 
-    voiceBtn.addEventListener("click", () => {
-        recognition.start();
-        updateAvatar("talking");
-    });
-
-    recognition.onresult = (event) => {
-        input.value = event.results[0][0].transcript;
-        updateAvatar("idle");
-    };
-
-    // মেসেজ সেন্ড লজিক
-    sendBtn.addEventListener("click", () => {
-        if (!input.value) return;
-        updateAvatar("talking");
-        setTimeout(() => updateAvatar("idle"), 3000);
-        input.value = "";
-    });
-
-    // স্প্ল্যাশ স্ক্রিন রিমুভ
-    setTimeout(() => {
-        document.getElementById("splash").style.display = "none";
-        // লগইন করার পর অবতার দেখাবে (auth.js থেকে কল করতে পারো)
-    }, 3000);
+// ভয়েস লজিক
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+voiceBtn.addEventListener("click", () => {
+    recognition.start();
+    avatar.src = "talking.gif";
 });
+
+recognition.onresult = (event) => {
+    input.value = event.results[0][0].transcript;
+    sendMessage();
+};
