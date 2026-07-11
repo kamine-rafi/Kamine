@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kamine AI - Secure Access</title>
+    <title>Kamine AI - Official</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,9 +30,12 @@
     <div id="app" style="display:none;">
         <div id="chat-container">
             <div id="chat-box"></div>
+            
             <div class="input-area">
+                <button onclick="startVoiceInput()" class="voice-btn">🎤</button>
+                
                 <input type="text" id="user-input" placeholder="Message Kamine...">
-                <button onclick="sendMessage()">➤</button>
+                <button onclick="sendMessage()" class="send-btn">➤</button>
             </div>
         </div>
     </div>
