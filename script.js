@@ -1,17 +1,75 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyBPf2yQQ1ixTG7y3RBqE5aJj_HcQ3OaoC8",
-  authDomain: "kanine-rafi.firebaseapp.com",
-  projectId: "kanine-rafi",
-  storageBucket: "kanine-rafi.firebasestorage.app",
-  messagingSenderId: "219986114815",
-  appId: "1:219986114815:web:b1b549b6fdd991573434ca"
+import { loginWithGoogle, logoutUser } from "./auth.js";
+import { verifyOwnerPin, verifyOwnerBiometric } from "./owner.js";
+import { startVoiceActivation, handleChatInput } from "./voice.js";
+
+let currentMode = null;
+
+// ১. ওপেন করলেই স্প্ল্যাশ স্ক্রিন ৩ সেকেন্ড থাকবে
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById("splash-screen").classList.add("hidden");
+        document.getElementById("mode-screen").classList.remove("hidden");
+    }, 3000);
 };
 
-firebase.initializeApp(firebaseConfig);
+window.selectMode = function(mode) {
+    document.getElementById("mode-screen").classList.add("hidden");
+    if (mode === 'owner') {
+        document.getElementById("owner-auth-screen").classList.remove("hidden");
+    } else {
+        document.getElementById("public-auth-screen").classList.remove("hidden");
+    }
+}
 
-function login() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-    .then(() => alert("Login Successful!"))
-    .catch((error) => alert(error.message));
+window.backToMode = function() {
+    document.getElementById("owner-auth-screen").classList.add("hidden");
+    document.getElementById("public-auth-screen").classList.add("hidden");
+    document.getElementById("mode-screen").classList.remove("hidden");
+}
+
+window.handlePinVerify = function() {
+    if (verifyOwnerPin()) {
+        enterApp('owner');
+    }
+}
+
+window.handleBiometricVerify = async function() {
+    const success = await verifyOwnerBiometric();
+    if (success) enterApp('owner');
+}
+
+window.handleGoogleLogin = async function() {
+    const user = await loginWithGoogle();
+    if (user) enterApp('public');
+}
+
+function enterApp(mode) {
+    currentMode = mode;
+    document.getElementById("owner-auth-screen").classList.add("hidden");
+    document.getElementById("public-auth-screen").classList.add("hidden");
+    document.getElementById("chat-interface").classList.remove("hidden");
+    
+    document.getElementById("current-mode-badge").innerText = mode === 'owner' ? "👑 Owner Mode" : "👥 Public Mode";
+
+    if (mode === 'owner') {
+        startVoiceActivation(); // ওনার মোডে ভয়েস একটিভেশন শুরু
+    }
+}
+
+window.handleSendMessage = function() {
+    const input = document.getElementById("user-input");
+    const text = input.value.trim();
+    if (text) {
+        handleChatInput(text, currentMode);
+        input.value = "";
+    }
+}
+
+window.handleKeyPress = function(e) {
+    if (e.key === 'Enter') window.handleSendMessage();
+}
+
+window.logout = function() {
+    logoutUser();
+    location.reload();
 }
