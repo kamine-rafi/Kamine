@@ -1,14 +1,30 @@
-export function startVoiceRecognition(callback) {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'bn-BD, en-US'; // দ্বিভাষিক সাপোর্ট
+import { processCommand } from "./commands.js";
+
+const synth = window.speechSynthesis;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+export function startVoiceActivation() {
+    recognition.lang = 'bn-BD';
+    recognition.continuous = true;
+    
     recognition.onresult = (event) => {
-        callback(event.results[0][0].transcript);
+        const transcript = event.results[event.results.length - 1][0].transcript;
+        if (transcript.toLowerCase().includes("hey kamine")) {
+            speak("জি বস, বলুন?");
+            processCommand(transcript);
+        }
     };
     recognition.start();
 }
 
 export function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'bn-BD';
-    window.speechSynthesis.speak(utterance);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'bn-BD';
+    synth.speak(utter);
+}
+
+export function handleChatInput(text, mode) {
+    // চ্যাটবক্সে মেসেজ যোগ করা এবং লজিক কল করা
+    processCommand(text);
 }
