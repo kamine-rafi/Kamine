@@ -2,19 +2,68 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kamine AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="splash-screen"><h1>Kamine AI</h1></div>
-    <div id="app" style="display:none;"></div>
-    
-    <script src="config.js"></script>
-    <script src="auth.js"></script>
-    <script src="owner.js"></script>
-    <script src="voice.js"></script>
-    <script src="commands.js"></script>
-    <script src="memory.js"></script>
-    <script src="script.js"></script>
+
+    <div id="splash-screen" class="screen flex-center">
+        <div class="logo-container">
+            <span class="logo-icon">🤖</span>
+            <h1 class="logo-text">KAMINE</h1>
+        </div>
+    </div>
+
+    <div id="mode-screen" class="screen flex-center hidden">
+        <h2>Select Mode</h2>
+        <div class="mode-buttons">
+            <button onclick="selectMode('owner')" class="btn-main">👑 Owner Mode</button>
+            <button onclick="selectMode('public')" class="btn-sub">👥 Public Mode</button>
+        </div>
+    </div>
+
+    <div id="owner-auth-screen" class="screen flex-center hidden">
+        <div class="lock-box">
+            <h3>🔒 Owner Verification</h3>
+            <input type="password" id="pin-input" placeholder="Enter PIN" maxlength="4">
+            <button onclick="handlePinVerify()" class="btn-main">Verify PIN</button>
+            <p>অথবা</p>
+            <button onclick="handleBiometricVerify()" class="btn-sub">Fingerprint / Face Lock</button>
+            <button onclick="backToMode()" class="btn-text">← Back</button>
+        </div>
+    </div>
+
+    <div id="public-auth-screen" class="screen flex-center hidden">
+        <div class="lock-box">
+            <h3>👥 Public Mode</h3>
+            <p>Please sign in to continue</p>
+            <button onclick="handleGoogleLogin()" class="btn-main google-btn">Sign in with Google</button>
+            <button onclick="backToMode()" class="btn-text">← Back</button>
+        </div>
+    </div>
+
+    <div id="chat-interface" class="screen hidden">
+        <header class="chat-header">
+            <div class="status-info">
+                <span id="current-mode-badge">Mode</span>
+                <span id="voice-status" class="status-offline">● Voice Inactive</span>
+            </div>
+            <button onclick="logout()" class="btn-logout">Exit</button>
+        </header>
+
+        <main id="chat-box" class="chat-box">
+            </main>
+
+        <footer class="chat-footer">
+            <div class="input-container">
+                <button id="mic-btn" onclick="toggleVoiceInput()" class="mic-btn">🎙️</button>
+                <input type="text" id="user-input" placeholder="Ask Kamine..." onkeypress="handleKeyPress(event)">
+                <button onclick="handleSendMessage()" class="send-btn">➤</button>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
