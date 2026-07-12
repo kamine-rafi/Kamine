@@ -1,22 +1,13 @@
-export function initOwnerMode() {
-    console.log("Welcome back, Boss");
-    startVoiceRecognition();
+export function verifyOwnerPin() {
+    const pin = document.getElementById("pin-input").value;
+    return pin === "1234"; // এখানে আপনার সেট করা পিন দিন
 }
 
-function startVoiceRecognition() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'bn-BD';
-    
-    recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        if (text.includes("Hey Kamine")) {
-            speak("জি বস, বলুন কী করতে হবে?");
-        }
-    };
-    recognition.start();
-}
-
-function speak(text) {
-    const msg = new SpeechSynthesisUtterance(text);
-    window.speechSynthesis.speak(msg);
+export async function verifyOwnerBiometric() {
+    // Web Authentication API (WebAuthn) এখানে ব্যবহার করা যায়
+    try {
+        return true; // সিমুলেশন হিসেবে true রাখা হয়েছে
+    } catch (e) {
+        return false;
+    }
 }
