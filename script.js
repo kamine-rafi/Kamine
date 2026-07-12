@@ -1,42 +1,59 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamine AI</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-</head>
-<body>
+// ১. Firebase কনফিগারেশন
+const firebaseConfig = {
+  apiKey: "AIzaSyBPf2yQQ1ixTG7y3RBqE5aJj_HcQ3OaoC8",
+  authDomain: "kanine-rafi.firebaseapp.com",
+  projectId: "kanine-rafi",
+  storageBucket: "kanine-rafi.firebasestorage.app",
+  messagingSenderId: "219986114815",
+  appId: "1:219986114815:web:b1b549b6fdd991573434ca",
+  measurementId: "G-GTFQ5YFLEF"
+};
 
-    <!-- ১. লোডিং স্ক্রিন -->
-    <div id="status-screen" class="center-screen">
-        <p>Loading Kamine...</p>
-    </div>
+// Firebase ইনিশিয়ালাইজেশন
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
-    <!-- ২. ওনার ভেরিফিকেশন (পিন ও বায়োমেট্রিক) -->
-    <div id="owner-verification" class="center-screen" style="display:none;">
-        <div class="lock-box">
-            <h3>🔒 Owner Verification</h3>
-            <input type="password" id="pin-input" placeholder="Enter 4-Digit PIN" maxlength="4">
-            <button onclick="verifyPin()" class="btn-primary">Verify PIN</button>
-            
-            <p>অথবা</p>
-            <button onclick="verifyBiometric()" class="btn-secondary">Fingerprint / Face Lock</button>
-            
-            <p>অথবা</p>
-            <button onclick="loginWithGoogle()" class="btn-google">Sign in with Google</button>
-        </div>
-    </div>
+// ২. অ্যাপ লোড হওয়ার পর স্ক্রিন কন্ট্রোল
+window.onload = () => {
+    // লোডিং স্ক্রিন সরিয়ে পিন ভেরিফিকেশন স্ক্রিন দেখানো
+    document.getElementById('status-screen').style.display = 'none';
+    document.getElementById('owner-verification').style.display = 'block';
+};
 
-    <!-- ৩. মূল অ্যাপ স্ক্রিন -->
-    <div id="app-screen" class="center-screen" style="display:none;">
-        <h1>Welcome Back!</h1>
-        <button onclick="location.reload()" class="btn-secondary">Logout / Refresh</button>
-    </div>
+// ৩. পিন ভেরিফিকেশন লজিক
+function verifyPin() {
+    const pin = document.getElementById('pin-input').value;
+    if (pin === "1234") {
+        showApp();
+    } else {
+        alert("ভুল পিন! দয়া করে সঠিক পিন দিন।");
+    }
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+// ৪. বায়োমেট্রিক লজিক (সিমুলেটেড)
+function verifyBiometric() {
+    // যেহেতু ব্রাউজারে সরাসরি ফিঙ্গারপ্রিন্ট সেন্সর এক্সেস জটিল, 
+    // এটি আপাতত একটি কনফার্মেশন প্রম্পট হিসেবে কাজ করবে
+    const confirmed = confirm("আপনার ডিভাইসের বায়োমেট্রিক স্ক্যানার ব্যবহার করুন");
+    if (confirmed) {
+        showApp();
+    }
+}
+
+// ৫. Google লগইন লজিক
+function loginWithGoogle() {
+    auth.signInWithPopup(provider)
+        .then((result) => {
+            showApp();
+        })
+        .catch((error) => {
+            alert("লগইন ব্যর্থ: " + error.message);
+        });
+}
+
+// ৬. অ্যাপ স্ক্রিনে যাওয়ার ফাংশন
+function showApp() {
+    document.getElementById('owner-verification').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+}
