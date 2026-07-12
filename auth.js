@@ -1,13 +1,18 @@
-export async function checkAuth() {
-    // এখানে আপনার Firebase বা Auth লজিক বসবে
-    const isAuthenticated = localStorage.getItem('user');
-    if (!isAuthenticated) return null;
-    
-    // ধরি owner হলে localStorage-এ 'role' সেভ আছে
-    return { isOwner: localStorage.getItem('role') === 'boss' };
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+
+const auth = getAuth();
+const provider = new GoogleAuthProvider();
+
+export async function loginWithGoogle() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        return result.user;
+    } catch (error) {
+        console.error("Login Error:", error);
+        return null;
+    }
 }
 
-export function initPublicMode() {
-    console.log("Public mode activated: Login with Gmail");
-    // ইন্টারফেস রেন্ডার লজিক...
+export function logoutUser() {
+    signOut(auth);
 }
